@@ -1,7 +1,7 @@
 #!/bin/bash
 
 h=$HOME
-
+p=$(pwd)
 declare -a old=('vim' 'vim/vimrc' 'vim/gvimrc' 'X11/Xmodmap' 'Xdefaults' 'bash/bashrc' 'bash/inputrc' 'i3' 'i3/i3status.conf' 'xmonad')
 
 declare -a new=('.vim/' '.vimrc' '.gvimrc' '.Xmodmap' '.Xdefaults' '.bashrc' '.inputrc' '.i3/' '.i3/i3status.conf' '.xmonad')
@@ -11,7 +11,7 @@ count=${#old[@]}
 for ((i = 0; i < $count; i++))
 do
   mv $h/${new[i]} $h/${new[i]}.sav
-  ln -s ./${old[i]} $h/${new[i]}
+  ln -s $p/${old[i]} $h/${new[i]}
 done
 #mv $h/.vim $h/.vim.sav
 
