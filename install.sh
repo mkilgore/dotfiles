@@ -10,8 +10,8 @@ declare -a new=('.vim/' '.vimrc' '.gvimrc' '.Xmodmap' '.Xdefaults' '.bashrc' '.i
 count=${#old[@]}
 for ((i = 0; i < $count; i++))
 do
-  mv $h/$new[i] $h/$new[i].sav
-  ln -s ./$old[i] $h/$new[i]
+  mv $h/${new[i]} $h/${new[i]}.sav
+  ln -s ./${old[i]} $h/${new[i]}
 done
 #mv $h/.vim $h/.vim.sav
 
