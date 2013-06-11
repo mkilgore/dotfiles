@@ -7,11 +7,11 @@ declare -a old=('vim' 'vim/vimrc' 'vim/gvimrc' 'X11/Xmodmap' 'Xdefaults' 'bash/b
 declare -a new=('.vim/' '.vimrc' '.gvimrc' '.Xmodmap' '.Xdefaults' '.bashrc' '.inputrc' '.i3/' '.i3/i3status.conf' '.xmonad')
 
 # for o, n in old(@), new(@)
-count=${#old(@)}
+count=${#old[@]}
 for ((i = 0; i < $count; i++))
 do
-  mv $h/$new(i) $h/$new(i).sav
-  ln -s ./$old(i) $h/$new(i)
+  mv $h/$new[i] $h/$new[i].sav
+  ln -s ./$old[i] $h/$new[i]
 done
 #mv $h/.vim $h/.vim.sav
 
