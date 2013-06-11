@@ -1,0 +1,11 @@
+#!/bin/bash
+
+nitrogen --restore
+xsetroot -cursor_name left_ptr
+pulseaudio &
+pactl set-sink-volume 0 0
+xset -b &
+dunst &
+xfce4-terminal --title scratchpad &
+
+

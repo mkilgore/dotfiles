@@ -1,0 +1,36 @@
+# Add nano as default editor
+
+#[[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && startx
+
+PATH="$PATH:~/.cabal/bin:~/.xmonad/bin"
+
+# Use VI input mode (Slightly modified in ./inputrc
+set -o vi
+
+# Swap caps_lock and left_control key -- This works for VT's
+(echo "keymaps 0-2,4-6,8-9,12"; echo "keycode 58 = Control"; echo "keycode 29 = Caps_Lock") | sudo loadkeys -
+
+[[ $- != *i* ]] && return
+
+
+ncolors=$(tput colors)
+export EDITOR=vim
+if [ -n "$ncolors" ] && [ $ncolors -ge 8 ]; then
+
+	alias ls='ls --color=auto'
+
+	fortune
+
+	PS1='\[\e[0;32m\]\u\[\e[m\] \[\e[1;34m\]\w\[\e[m\] \[\e[1;32m\]\$\[\e[m\] \[\e[1;0m\]'
+fi
+#[ ! "$UID" = "0" ] && archbey -c white
+#[  "$UID" = "0" ] && archbey -c green
+#PS1="\[\e[01;31m\][e[01;35m\u\e[01;31m\]][01;32m\]]:\w$\[\e[0m\]"
+
+
+
+export PERL_LOCAL_LIB_ROOT="$PERL_LOCAL_LIB_ROOT:/home/dsman195276/perl5";
+export PERL_MB_OPT="--install_base /home/dsman195276/perl5";
+export PERL_MM_OPT="INSTALL_BASE=/home/dsman195276/perl5";
+export PERL5LIB="/home/dsman195276/perl5/lib/perl5:$PERL5LIB";
+export PATH="/home/dsman195276/perl5/bin:$PATH";
