@@ -1,0 +1,106 @@
+
+set nocp
+
+syntax on
+
+noremap  <Up> ""
+noremap! <Up> <Esc>
+noremap  <Down> ""
+noremap! <Down> <Esc>
+noremap  <Left> ""
+noremap! <Left> <Esc>
+noremap  <Right> ""
+noremap! <Right> <Esc>
+
+nnoremap P Ph
+
+nmap j gj
+nmap k gk
+
+nmap <silent> <C-n> :NERDTreeToggle<CR>
+nmap <silent> <C-i> :MiniBufExplorer<CR>
+
+nmap <silent> <C-h> <C-w><Left>
+nmap <silent> <C-j> <C-w><Down> 
+nmap <silent> <C-k> <C-w><Up>
+nmap <silent> <C-l> <C-w><Right>
+
+nnoremap <C-k> <nop>
+
+map <silent> h <C-w><
+map <silent> j <C-W>-
+map <silent> k <C-W>+
+map <silent> l <C-w>>
+
+map <silent> <C-C>l :let @" = expand("%:t:r")<CR>:!qb64_n <C-R>"<CR>
+map <silent> <C-C>k :let @" = expand("%:t:r")<CR>:!qb64_p <C-R>"<CR>
+map <silent> <C-C>h :let @" = expand("%:t:r")<CR>:!qb64_parse <C-R>"<CR>
+
+inoremap <silent> <C-k> <Esc>
+imap <silent> <C-p> <C-k>pa
+inoremap <silent> <Esc> <nop>
+
+autocmd BufRead,BufNewFile *.bm set filetype=qb64
+autocmd BufRead,BufNewFile *.bi set filetype=qb64
+autocmd BufRead,BufNewFile *.bas set filetype=qb64
+
+set tabstop=2
+set shiftwidth=2
+set expandtab
+" set foldmethod=marker
+
+set foldmethod=expr
+set foldexpr=GetPotionFold(v:lnum)
+set foldnestmax=0
+
+function! GetPotionFold(lnum)
+  if !(empty(matchstr(getline(a:lnum), '\c^FUNCTION '))) || !(empty(matchstr(getline(a:lnum), '\c^SUB ')))
+    return '>1'
+  elseif !(empty(matchstr(getline(a:lnum), '''@@$')))
+    return '>1'
+  elseif !(empty(matchstr(getline(a:lnum), '\c^TYPE ')))
+    return '>1'
+  elseif a:lnum - 1 > 0
+    if !(empty(matchstr(getline(a:lnum - 1), '\c^END SUB'))) || !(empty(matchstr(getline(a:lnum - 1), '\c^END FUNCTION')))
+      return '0'
+    elseif !(empty(matchstr(getline(a:lnum - 1), '''@@@$')))
+      return '0'
+    elseif !(empty(matchstr(getline(a:lnum - 1), '\c^END TYPE')))
+      return '0'
+    endif
+  endif
+  return '=' 
+endfunction
+
+map ,' :s/^/'/<CR>:nohlsearch<CR>
+
+set autoindent
+" set t_Co=256
+" if $TERM != "linux"
+  set t_Co=256
+  let g:solarized_termcolors=256
+" endif
+set background=dark
+
+set number
+
+if &diff
+  color neverland2-darker
+else
+  color jellybeans
+endif
+
+set hidden
+" set relativenumber
+set nohlsearch
+set mousehide
+
+
+filetype plugin on
+
+let g:miniBufExplCheckDupeBufs=0
+
+set foldcolumn=1
+
+set directory=~/.vim/swp/
+
