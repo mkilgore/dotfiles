@@ -3,7 +3,7 @@ export QB64_COMPILER=~/qb64-sdl/qb64/run_qb64.sh
 xrandr --output LVDS-0 --auto --output VGA-0 --auto --left-of LVDS-0
 xmodmap ~/.Xmodmap
 
-unclutter -jitter 10 -reset -grab
+unclutter -jitter 10 -reset -grab &
 
 case $1 in
   i3)
