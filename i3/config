@@ -24,17 +24,19 @@ font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec urxvtc
+bindsym $mod+Return exec --no-startup-id urxvtc
 
 # kill focused window
 bindsym $mod+Shift+q kill
 
 # start dmenu (a program launcher)
-bindsym $mod+p exec dmenu_run
+bindsym $mod+p exec --no-startup-id dmenu_run
 # There also is the (new) i3-dmenu-desktop which only displays applications
 # shipping a .desktop file. It is a wrapper around dmenu, so you need that
 # installed.
 # bindsym $mod+d exec --no-startup-id i3-dmenu-desktop
+
+#focus_follows_mouse no
 
 # change focus
 bindsym $mod+h focus left
@@ -104,10 +106,8 @@ set $7   7
 set $8   8
 set $9   9
 set $10  10
-set $11  Term
 set $12  Web
 set $13  Code
-set $14  Irc
 set $15  Media
 set $16  System
 set $17  Music
@@ -117,10 +117,10 @@ workspace $11  output VGA-0
 workspace $12  output VGA-0
 workspace $13  output VGA-0
 workspace $14  output LVDS-0
-workspace $15  output LVDS-0
+workspace $15  output VGA-0
 workspace $16  output LVDS-0
 workspace $17  output LVDS-0
-workspace $18 output LVDS-0
+workspace $18  output LVDS-0
 
 
 
@@ -137,10 +137,8 @@ mode "move" {
   bindsym 8 workspace $8; mode "default"
   bindsym 9 workspace $9; mode "default"
   bindsym 0 workspace $10; mode "default"
-  bindsym t workspace $11; mode "default" 
   bindsym w workspace $12; mode "default" 
   bindsym c workspace $13; mode "default"
-  bindsym i workspace $14; mode "default"
   bindsym v workspace $15; mode "default"
   bindsym s workspace $16; mode "default"
   bindsym g workspace $17; mode "default"
@@ -157,28 +155,29 @@ mode "move" {
   bindsym Shift+8 move container to workspace $8; mode "default"
   bindsym Shift+9 move container to workspace $9; mode "default"
   bindsym Shift+0 move container to workspace $10; mode "default"
-  bindsym Shift+t move container to workspace $11; mode "default"
   bindsym Shift+w move container to workspace $12; mode "default"
   bindsym Shift+c move container to workspace $13; mode "default"
-  bindsym Shift+i move container to workspace $14; mode "default"
   bindsym Shift+v move container to workspace $15; mode "default"
   bindsym Shift+s move container to workspace $16; mode "default"
   bindsym Shift+g move container to workspace $17; mode "default"
   bindsym Shift+m move container to workspace $18; mode "default"
 
-  bindsym j focus down; mode "default"
-  bindsym k focus up; mode "default"
-  bindsym h focus left; mode "default"
-  bindsym l focus right; mode "default"
+  bindsym j focus down
+  bindsym k focus up
+  bindsym h focus left
+  bindsym l focus right
 
-  bindsym Shift+j move down; mode "default"
-  bindsym Shift+k move up; mode "default"
-  bindsym Shift+h move left; mode "default"
-  bindsym Shift+l move right; mode "default"
+  bindsym Shift+j move down
+  bindsym Shift+k move up
+  bindsym Shift+h move left
+  bindsym Shift+l move right
 
 
   bindsym o scratchpad show; mode "default"
   bindsym m move scratchpad; mode "default"
+
+  bindsym u [Instance="scratchpad"] scratchpad show; mode "default"
+  bindsym i [Instance="irssi"] scratchpad show; mode "default"
 
   bindsym Control+k mode "default"
   bindsym Esc mode "default"
@@ -309,23 +308,42 @@ bar {
         modifier $mod
         tray_output LVDS-0
         status_command i3status
+
+        colors {
+                background #000000
+                statusline #ffffff
+
+        }
 }
 
+new_window 1pixel
+new_float normal
 
 for_window [Class="urxvt" Instance="scratchpad"] move scratchpad
+for_window [Class="urxvt" Instance="irssi"] move scratchpad
 exec --no-startup-id urxvtd
 exec --no-startup-id i3-msg 'exec urxvtc -name scratchpad;'
 exec --no-startup-id i3-msg 'workspace Code; exec gvim;'
 exec --no-startup-id i3-msg 'workspace Term; exec urxvtc'
 exec --no-startup-id i3-msg 'workspace Mail; exec urxvtc -name mutt -e mutt;'
-exec --no-startup-id i3-msg 'workspace Irc; exec urxvtc -name irssi -e irssi'
 exec --no-startup-id i3-msg 'workspace Web; exec firefox;'
 exec --no-startup-id i3-msg 'workspace Term'
 exec --no-startup-id nitrogen --restore
 exec --no-startup-id pulseaudio
 exec --no-startup-id twmnd
 
-bindsym $mod+Control+j exec /usr/bin/pactl set-sink-volume 0 -- '-2%'
-bindsym $mod+Control+k exec /usr/bin/pactl set-sink-volume 0 -- '+2%'
-bindsym $mod+Control+m exec /usr/local/bin/toggle_pulse.sh
+# bindsym $mod+Control+m exec 'urxvtc -name irssi -e irssi'
+
+bindsym $mod+Control+b border 1pixel
+bindsym $mod+Control+n border normal
+bindsym $mod+Control+v border none
+
+bindsym $mod+Control+j exec --no-startup-id /usr/bin/pactl set-sink-volume 0 -- '-2%'
+bindsym $mod+Control+k exec --no-startup-id /usr/bin/pactl set-sink-volume 0 -- '+2%'
+bindsym $mod+Control+m exec --no-startup-id /usr/local/bin/toggle_pulse.
+
+client.focused          #4c7899 #285577 #ffffff #2e9ef4
+client.focused_inactive #333333 #333333 #888888 #292d2e
+client.unfocused        #333333 #222222 #888888 #292d2e
+client.urgent           #2f343a #900000 #ffffff #900000
 

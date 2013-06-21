@@ -1,6 +1,7 @@
 
 set nocp
 
+
 syntax on
 
 noremap  <Up> ""
@@ -26,6 +27,7 @@ nmap <silent> <C-k> <C-w><Up>
 nmap <silent> <C-l> <C-w><Right>
 
 nnoremap <C-k> <nop>
+noremap  W @q
 
 map <silent> h <C-w><
 map <silent> j <C-W>-
@@ -39,6 +41,8 @@ map <silent> <C-C>h :let @" = expand("%:t:r")<CR>:!qb64_parse <C-R>"<CR>
 inoremap <silent> <C-k> <Esc>
 imap <silent> <C-p> <C-k>pa
 inoremap <silent> <Esc> <nop>
+nnoremap <Space> <C-f>
+nnoremap <Backspace> <C-b>
 
 autocmd BufRead,BufNewFile *.bm set filetype=qb64
 autocmd BufRead,BufNewFile *.bi set filetype=qb64
@@ -49,9 +53,12 @@ set shiftwidth=2
 set expandtab
 " set foldmethod=marker
 
-set foldmethod=expr
+" set foldmethod=expr
+set foldmethod=manual
 set foldexpr=GetPotionFold(v:lnum)
 set foldnestmax=0
+
+nnoremap <silent> <C-m> :set foldmethod=expr<CR>:set foldmethod=manual<CR>
 
 function! GetPotionFold(lnum)
   if !(empty(matchstr(getline(a:lnum), '\c^FUNCTION '))) || !(empty(matchstr(getline(a:lnum), '\c^SUB ')))
@@ -75,32 +82,32 @@ endfunction
 map ,' :s/^/'/<CR>:nohlsearch<CR>
 
 set autoindent
-" set t_Co=256
-" if $TERM != "linux"
+if $TERM != "linux"
   set t_Co=256
   let g:solarized_termcolors=256
-" endif
-set background=dark
+  set background=dark
+endif
 
 set number
 
 if &diff
   color neverland2-darker
-else
+elseif $TERM != "linux"
   color jellybeans
+else
+  color default
 endif
 
 set hidden
-" set relativenumber
 set nohlsearch
 set mousehide
-
 
 filetype plugin on
 
 let g:miniBufExplCheckDupeBufs=0
-
 set foldcolumn=1
-
 set directory=~/.vim/swp/
+
+vnoremap > >gv
+vnoremap < <gv
 

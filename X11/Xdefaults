@@ -13,9 +13,10 @@ Xft.hintstyle:  hintslight
 URxvt*geometry:					80x25
 URxvt*foreground:				grey80
 URxvt*borderLess:				false
-URxvt*depth:					32
+!URxvt*depth:					32
 URxvt*background:				rgba:0000/0000/0000/dddd
-URxvt*scrollBar_right:				true
+URxvt*scrollBar:				false
+URxvt*scrollstyle:            rxvt
 URxvt*font:					xft:Terminus-10
 URxvt*cursorBlink:				true
 URxvt*cursorUnderline:				true
