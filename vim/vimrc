@@ -124,10 +124,13 @@ if $TERM != "linux"
   set t_Co=256
   let g:solarized_termcolors=256
   set background=dark
-endif
 
-" Display line numbers by default
-set number
+  " Display line numbers when not in a VT
+  set number
+
+  " Have the left column used to display current folds
+  set foldcolumn=1
+endif
 
 if &diff " Colorscheme for Vimdiff
   color neverland2-darker
@@ -148,8 +151,7 @@ filetype plugin on
 " Setting for MiniBufExplorer to prevent some slowdown that can happen when
 " switching between lots of buffers
 let g:miniBufExplCheckDupeBufs=0
-" Have the left column used to display current folds
-set foldcolumn=1
+
 " Directory to hold swp files
 set directory=~/.vim/swp/
 
@@ -157,6 +159,7 @@ set directory=~/.vim/swp/
 " By changing them to >gv and <gv, the current selected code is kept selected
 " after an indent, allowing you to quicking do multiple indents without having
 " to reselect the code
-vnoremap > >gv
-vnoremap < <gv
+vnoremap <C-m> >gv
+vnoremap <C-n> <gv
+vnoremap <C-k> <Esc>
 
