@@ -94,7 +94,7 @@ bindsym $mod+space focus mode_toggle
 bindsym $mod+a focus parent
 
 # focus the child container
-#bindsym $mod+d focus child
+bindsym $mod+d focus child
 
 set $1   1
 set $2   2
@@ -106,12 +106,12 @@ set $7   7
 set $8   8
 set $9   9
 set $10  10
-set $12  Web
-set $13  Code
-set $15  Media
-set $16  System
-set $17  Music
-set $18  Mail
+set $11  Web
+set $12  Code
+set $13  Media
+set $14  System
+set $15  Music
+set $16  Mail
 
 workspace $11  output VGA-0
 workspace $12  output VGA-0
@@ -119,10 +119,6 @@ workspace $13  output VGA-0
 workspace $14  output LVDS-0
 workspace $15  output VGA-0
 workspace $16  output LVDS-0
-workspace $17  output LVDS-0
-workspace $18  output LVDS-0
-
-
 
 mode "move" {
 
@@ -137,12 +133,12 @@ mode "move" {
   bindsym 8 workspace $8; mode "default"
   bindsym 9 workspace $9; mode "default"
   bindsym 0 workspace $10; mode "default"
-  bindsym w workspace $12; mode "default" 
-  bindsym c workspace $13; mode "default"
-  bindsym v workspace $15; mode "default"
-  bindsym s workspace $16; mode "default"
-  bindsym g workspace $17; mode "default"
-  bindsym m workspace $18; mode "default"
+  bindsym w workspace $11; mode "default" 
+  bindsym c workspace $12; mode "default"
+  bindsym v workspace $13; mode "default"
+  bindsym s workspace $14; mode "default"
+  bindsym g workspace $15; mode "default"
+  bindsym m workspace $16; mode "default"
 
   # move focused container to workspace
   bindsym Shift+1 move container to workspace $1; mode "default"
@@ -155,12 +151,12 @@ mode "move" {
   bindsym Shift+8 move container to workspace $8; mode "default"
   bindsym Shift+9 move container to workspace $9; mode "default"
   bindsym Shift+0 move container to workspace $10; mode "default"
-  bindsym Shift+w move container to workspace $12; mode "default"
-  bindsym Shift+c move container to workspace $13; mode "default"
-  bindsym Shift+v move container to workspace $15; mode "default"
-  bindsym Shift+s move container to workspace $16; mode "default"
-  bindsym Shift+g move container to workspace $17; mode "default"
-  bindsym Shift+m move container to workspace $18; mode "default"
+  bindsym Shift+w move container to workspace $11; mode "default"
+  bindsym Shift+c move container to workspace $12; mode "default"
+  bindsym Shift+v move container to workspace $13; mode "default"
+  bindsym Shift+s move container to workspace $14; mode "default"
+  bindsym Shift+g move container to workspace $15; mode "default"
+  bindsym Shift+m move container to workspace $16; mode "default"
 
   bindsym j focus down
   bindsym k focus up
@@ -177,7 +173,6 @@ mode "move" {
   bindsym m move scratchpad; mode "default"
 
   bindsym u [Instance="scratchpad"] scratchpad show; mode "default"
-  bindsym i [Instance="irssi"] scratchpad show; mode "default"
 
   bindsym Control+k mode "default"
   bindsym Esc mode "default"
@@ -320,14 +315,9 @@ new_window 1pixel
 new_float normal
 
 for_window [Class="urxvt" Instance="scratchpad"] move scratchpad
-for_window [Class="urxvt" Instance="irssi"] move scratchpad
 exec --no-startup-id urxvtd
 exec --no-startup-id i3-msg 'exec urxvtc -name scratchpad;'
-exec --no-startup-id i3-msg 'workspace Code; exec gvim;'
-exec --no-startup-id i3-msg 'workspace Term; exec urxvtc'
 exec --no-startup-id i3-msg 'workspace Mail; exec urxvtc -name mutt -e mutt;'
-exec --no-startup-id i3-msg 'workspace Web; exec firefox;'
-exec --no-startup-id i3-msg 'workspace Term'
 exec --no-startup-id nitrogen --restore
 exec --no-startup-id pulseaudio
 exec --no-startup-id twmnd
