@@ -1,0 +1,71 @@
+#!/bin/bash
+export QB64_COMPILER=~/qb64-sdl/qb64/run_qb64.sh
+xrandr --output LVDS-0 --auto --output VGA-0 --auto --left-of LVDS-0
+xmodmap ~/.Xmodmap
+
+unclutter -jitter 10 -reset -grab
+
+case $1 in
+  i3)
+    exec i3
+    ;;
+  spectrwm)
+    xsetroot -cursor_name left_ptr
+    nitrogen --restore
+    pulseaudio &
+    exec dbus-launch spectrwm
+    ;;
+  dwm)
+    xsetroot -cursor_name left_ptr
+    nitrogen --restore
+    pulseaudio &
+    exec dbus-launch dwm
+    ;;
+	xmonad)
+		xsetroot -cursor_name left_ptr
+    nitrogen --restore
+    pulseaudio &
+		exec dbus-launch xmonad
+		;;
+  awesome)
+    exec awesome
+    ;;
+	gnome)	
+		exec dbus-launch gnome-session
+		#exec dbus-launch gnome-session
+		;;
+	gnome-fallback)
+		exec dbus-launch gnome-session --session=fallback
+		;;
+	kde)
+		exec dbus-launch startkde
+		;;
+	mate)
+		exec dbus-launch mate-session
+		;;
+	xfce4)
+		exec startxfce4
+		;;
+	e17)
+		exec dbus-launch enlightenment_start
+		;;
+	lightdm)
+		exec sudo lightdm
+		;;
+	unity)
+		exec gnome-session --session=ubuntu
+		;;
+	rox)
+		exec rox
+		;;
+	cinnamon)
+		exec cinnamon
+		/usr/lib/gnome-settings-daemon/gnome-settings-daemon &
+		;;
+	*)
+		export BROWSER=firefox
+		export DE=openbox
+		exec openbox-session
+		;;
+esac
+
