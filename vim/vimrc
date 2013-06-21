@@ -1,9 +1,11 @@
 
+" Set non-vi-compatable mode
 set nocp
 
-
+" Turn on Syntax highlighting by default
 syntax on
 
+" Disable arrow-keys, mostly so I'm not tempted to use them
 noremap  <Up> ""
 noremap! <Up> <Esc>
 noremap  <Down> ""
@@ -13,53 +15,83 @@ noremap! <Left> <Esc>
 noremap  <Right> ""
 noremap! <Right> <Esc>
 
+" This simply makes the cursor move to the left one space with pasting with P
+" It makes sure the cursor stays in the same location after pasting is done
 nnoremap P Ph
 
+" Makes cursor movements just move to the next on-screen row instead of next
+" text row
 nmap j gj
 nmap k gk
 
+" Keybindings for opening-closing NERD tree as well as putting MiniBufExplorer
+" into focus
 nmap <silent> <C-n> :NERDTreeToggle<CR>
 nmap <silent> <C-i> :MiniBufExplorer<CR>
 
+" Maps moving around open windows to C+hjkl (So Just hold Control and then
+" move like normal).
 nmap <silent> <C-h> <C-w><Left>
 nmap <silent> <C-j> <C-w><Down> 
 nmap <silent> <C-k> <C-w><Up>
 nmap <silent> <C-l> <C-w><Right>
 
+" Unmaps Control+k in normal mode (I remap to exit insert mode a little later
+" down, and this is to prevent messing things up from accidentally tapping it
+" twice when exiting insert mode)
 nnoremap <C-k> <nop>
+
+" handy, remap's W to play the q macro. Allows quick playback since I use q
+" for one-time macros
 noremap  W @q
 
+" While it looks weird (Since I had to use the actual excape character) all
+" this does is map Alt+hjkl to resizing the current window. Handy, goes well
+" with the above remaping of Control+hjkl, which was the idea
 map <silent> h <C-w><
 map <silent> j <C-W>-
 map <silent> k <C-W>+
 map <silent> l <C-w>>
 
+" A few quick keybindings for compiling hte current file with QB64. It
+" requires some extra scripts /usr/local/bin
 map <silent> <C-C>l :let @" = expand("%:t:r")<CR>:!qb64_n <C-R>"<CR>
 map <silent> <C-C>k :let @" = expand("%:t:r")<CR>:!qb64_p <C-R>"<CR>
 map <silent> <C-C>h :let @" = expand("%:t:r")<CR>:!qb64_parse <C-R>"<CR>
 
+" Map C-k to exit insert mode
 inoremap <silent> <C-k> <Esc>
+" Map C-p to paste inside of insert mode
 imap <silent> <C-p> <C-k>pa
+" Unmap Esc (So I didn't keep using it)
 inoremap <silent> <Esc> <nop>
+" Map Space to move one page down
 nnoremap <Space> <C-f>
+" Map Backspace to move one page up
 nnoremap <Backspace> <C-b>
 
+" Setup some filetypes for qb64 source files
 autocmd BufRead,BufNewFile *.bm set filetype=qb64
 autocmd BufRead,BufNewFile *.bi set filetype=qb64
 autocmd BufRead,BufNewFile *.bas set filetype=qb64
 
+" Set some tab settings
 set tabstop=2
 set shiftwidth=2
 set expandtab
-" set foldmethod=marker
 
-" set foldmethod=expr
+" Setup folding settings
+" Note by default it's manual, so no automatic folding will ever happen
+" having folding contually checked is extremly slow, so I avoid it
 set foldmethod=manual
 set foldexpr=GetPotionFold(v:lnum)
 set foldnestmax=0
 
+" Maps C-m to refiguring the fold's using the below function
 nnoremap <silent> <C-m> :set foldmethod=expr<CR>:set foldmethod=manual<CR>
 
+" This function handles folds for QB64 code
+" It basically just folds on FUNCTION, SUB, TYPE blocks
 function! GetPotionFold(lnum)
   if !(empty(matchstr(getline(a:lnum), '\c^FUNCTION '))) || !(empty(matchstr(getline(a:lnum), '\c^SUB ')))
     return '>1'
@@ -79,35 +111,52 @@ function! GetPotionFold(lnum)
   return '=' 
 endfunction
 
+" Nice little key combo to comment out all the selected code
 map ,' :s/^/'/<CR>:nohlsearch<CR>
 
+" Auto indent setup
 set autoindent
+
+" $TERM = "linux" in a normal VT console -- which my color settings don't work
+" in. For everything else colors work as normal
 if $TERM != "linux"
+  " Set 256 color support, and a few extra settings for solarized
   set t_Co=256
   let g:solarized_termcolors=256
   set background=dark
 endif
 
+" Display line numbers by default
 set number
 
-if &diff
+if &diff " Colorscheme for Vimdiff
   color neverland2-darker
-elseif $TERM != "linux"
+elseif $TERM != "linux" " Colorscheme for most terminals
   color jellybeans
-else
+else "Colorscheme for default VT
   color default
 endif
 
+" hide buffers when opening new files, don't hilight search results by
+" default
 set hidden
 set nohlsearch
-set mousehide
 
+" Detect filetype's
 filetype plugin on
 
+" Setting for MiniBufExplorer to prevent some slowdown that can happen when
+" switching between lots of buffers
 let g:miniBufExplCheckDupeBufs=0
+" Have the left column used to display current folds
 set foldcolumn=1
+" Directory to hold swp files
 set directory=~/.vim/swp/
 
+" In visual mode < and > indent or unindent the current lines
+" By changing them to >gv and <gv, the current selected code is kept selected
+" after an indent, allowing you to quicking do multiple indents without having
+" to reselect the code
 vnoremap > >gv
 vnoremap < <gv
 
