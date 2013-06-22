@@ -3,9 +3,6 @@
 
 PATH="$PATH:~/.cabal/bin:~/.xmonad/bin"
 
-# Start a mpd instance if not started already
-[ ! -s ~/.mpd/pid ] && mpd
-
 # Use VI input mode (Slightly modified in ./inputrc)
 set -o vi
 
