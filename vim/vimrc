@@ -119,7 +119,7 @@ set autoindent
 
 " $TERM = "linux" in a normal VT console -- which my color settings don't work
 " in. For everything else colors work as normal
-if $TERM != "linux"
+if $TERM != "linux" && $TERM != "screen"
   " Set 256 color support, and a few extra settings for solarized
   set t_Co=256
   let g:solarized_termcolors=256
@@ -135,7 +135,7 @@ endif
 if &diff " Colorscheme for Vimdiff
   color neverland2-darker
 elseif $TERM != "linux" " Colorscheme for most terminals
-  color jellybeans
+  color jellyx
 else "Colorscheme for default VT
   color default
 endif
