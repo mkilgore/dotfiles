@@ -2,9 +2,9 @@
 
 h=$HOME
 p=$(pwd)
-declare -a old=('vim' 'vim/vimrc' 'vim/gvimrc' 'X11/Xmodmap' 'Xdefaults'  'xinitrc'  'bash/bashrc' 'bash/inputrc' 'i3'  'i3/i3status.conf'  'xmonad' 'mutt/muttrc')
+declare -a old=('vim' 'vim/vimrc' 'vim/gvimrc' 'X11/Xmodmap' 'Xdefaults'  'xinitrc'  'bash/bashrc' 'bash/inputrc' 'i3'  'i3/i3status.conf'  'xmonad' 'mutt/muttrc' 'tmux/tmux.conf')
 
-declare -a new=('.vim' '.vimrc'   '.gvimrc'    '.Xmodmap'    '.Xdefaults' '.xinitrc' '.bashrc'     '.inputrc'     '.i3' '.i3status.conf'    '.xmonad' '.muttrc'   )
+declare -a new=('.vim' '.vimrc'   '.gvimrc'    '.Xmodmap'    '.Xdefaults' '.xinitrc' '.bashrc'     '.inputrc'     '.i3' '.i3status.conf'    '.xmonad' '.muttrc'    '.tmux.conf')
 
 # for o, n in old(@), new(@)
 count=${#old[@]}

@@ -9,10 +9,24 @@ set -o vi
 # Swap caps_lock and left_control key -- This works for VT's
 (echo "keymaps 0-2,4-6,8-9,12"; echo "keycode 58 = Control"; echo "keycode 29 = Caps_Lock") | sudo loadkeys -
 
-[[ $- != *i* ]] && return
+if [ -n "$USE_COLORS" ]; then
+  TERM=screen-256color
+fi
 
 ncolors=$(tput colors)
 export EDITOR=vim
+
+[[ $- != *i* ]] && return
+
+if [ -z "$TMUX" ]; then 
+#  if [ -n "$ncolors" ] && [ $ncolors = 8 ]; then
+  tmux
+#  elif [ $ncolors = 256 ]; then
+#    tmux -2
+#  fi
+  exit
+fi
+
 if [ -n "$ncolors" ] && [ $ncolors -ge 8 ]; then
 
 	alias ls='ls --color=auto'

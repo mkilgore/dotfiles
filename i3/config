@@ -24,7 +24,7 @@ font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec --no-startup-id urxvtc
+bindsym $mod+Return exec --no-startup-id bash /home/dsman195276/scripts/tmux_256.sh
 
 # kill focused window
 bindsym $mod+Shift+q kill
@@ -302,8 +302,8 @@ bar {
         position top
         modifier $mod
         tray_output LVDS-0
-        status_command i3status
-
+        status_command i3status-mod
+        font pango:DejaVu Sans Mono 8
         colors {
                 background #000000
                 statusline #ffffff
@@ -311,13 +311,12 @@ bar {
         }
 }
 
-new_window 1pixel
+new_window pixel 0
 new_float normal
 
 for_window [Class="urxvt" Instance="scratchpad"] move scratchpad
+
 exec --no-startup-id urxvtd
-exec --no-startup-id i3-msg 'exec urxvtc -name scratchpad;'
-exec --no-startup-id i3-msg 'workspace Mail; exec urxvtc -name mutt -e mutt;'
 exec --no-startup-id nitrogen --restore
 exec --no-startup-id pulseaudio
 exec --no-startup-id twmnd
