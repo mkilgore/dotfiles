@@ -17,7 +17,7 @@ URxvt*borderLess:				false
 URxvt*background:				rgba:0000/0000/0000/dddd
 URxvt*scrollBar:				false
 URxvt*scrollstyle:            rxvt
-URxvt*font:					xft:Terminus-8
+URxvt*font:					xft:Terminus-10
 URxvt*cursorBlink:				true
 URxvt*cursorUnderline:				true
 URxvt*scrollColor:				#111111
