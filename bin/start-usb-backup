@@ -1,0 +1,37 @@
+#!/bin/bash
+export DISPLAY=:0
+echo "first=$1" >> /tmp/temp.txt
+
+if [ -n "$1" ] && [ -z "$(echo "$1" | grep -o "sda")" ]; then
+  block=$(echo "$1" | grep -o "sd[a-z]")
+  while [ -z "$serial" ]; do
+    serial=$(udevadm info -a -p /sys/block/$block | grep -m1 serial | cut -c 21-37)
+    sleep 1
+  done
+  echo "serial=$serial" >> /tmp/temp.txt
+  if [ "$serial" == "ACBD42D1000002223" ] && [ "$block" == "$1" ]; then
+    sleep 1
+    su dsman195276 -c "DISPLAY=:0 notify-send --icon=drive-removable-media-usb \"AutoMount\" \"School USB drive detected\nMounting on <b>/mnt/school-usb</b>\nStarting auto-backup...\""
+
+    mount /mnt/school-usb
+    rsync -aAXv /mnt/school-usb/* /mnt/data/usb_backup
+    su dsman195276 -c "DISPLAY=:0 notify-send --icon=drive-removable-media-usb \"AutoMount\" \"Backup Complete.\""
+    end_flag=1
+  elif [ "$serial" == "116AC2101219" ]; then
+    dev=$1
+    su dsman195276 -c "DISPLAY=:0 notify-send --icon=drive-removable-media-usb \"AutoMount\" \"Removable Hard-drive detected on /dev/$dev\""
+  elif [ -n "$(echo "$1" | grep -E "sd[a-z][1-99]")" ] && [ "$serial" != "ACBD42D1000002223" ]; then
+    num=0
+    usb_list=$(ls -d /mnt/usb*)
+    end_flag=yes
+    while [ -n "$end_flag" ]; do
+      num=$(expr $num + 1)
+      end_flag=$(echo "$usb_list" | grep /mnt/usb$num)
+    done
+    mkdir /mnt/usb$num
+    mount /dev/$1 /mnt/usb$num
+    dev=$1
+    su dsman195276 -c "DISPLAY=:0 notify-send --icon=drive-removable-media-usb \"AutoMount\" \"USB Drive /dev/$dev mounted on\n<b>/mnt/usb$num</b>\""   
+  fi
+fi
+

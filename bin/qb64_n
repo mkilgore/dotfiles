@@ -1,0 +1,11 @@
+#!/bin/bash
+QB64_PATH=/home/dsman195276/qb64-sdl/
+
+pwds=`pwd`
+cd $QB64_PATH
+./matt-qb64 -x $pwds/$1.bas
+echo "Done!"
+#echo "Running $1..."
+#./$1
+cd $pwds
+

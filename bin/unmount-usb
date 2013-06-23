@@ -1,0 +1,22 @@
+#!/bin/bash
+export DISPLAY=:0
+echo "1=$1" >> /tmp/temp.txt
+
+if [ "$1" == "$(echo "$1" | grep -o "sd[a-z]")" ]; then
+  dev=$1
+  umount_list=$(mount | grep -o "/dev/${dev}[1-99]")
+  umount $umount_list
+  echo "umount_list=$umount_list" >> /tmp/temp.txt
+  echo "1=$1" >> /tmp/temp.txt
+  mount_list=$(mount)
+  for i in $(ls -d /mnt/usb*); do
+    echo "$i" >> /tmp/temp.txt
+    if [ -z "$(echo "$mount_list" | grep -m1 -o $i)" ]; then
+       echo "rmdir $i" >> /tmp/temp.txt
+       rmdir $i
+    #  rmdir $i
+    fi
+  done
+  su dsman195276 -c "DISPLAY=:0 notify-send --icon=drive-removable-media-usb \"AutoMount\" \"Unmounted drive /dev/$dev\""
+fi
+

@@ -1,0 +1,11 @@
+#!/bin/bash
+QB64_PATH=/home/dsman195276/qb64-sdl/
+
+pwds=`pwd`
+cd $QB64_PATH
+./parse_func $pwds/$1.bas
+echo "$pwds/$1.bas"
+./matt-qb64 -x $pwds/$1_OUTPUT.bas
+./$1_OUTPUT
+cd $pwds
+

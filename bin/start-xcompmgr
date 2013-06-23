@@ -1,0 +1,4 @@
+#!/bin/bash
+xrandr --output LVDS-0 --auto --output VGA-0 --auto --left-of LVDS-0
+xcompmgr &
+
