@@ -134,7 +134,7 @@ endif
 
 if &diff " Colorscheme for Vimdiff
   color neverland2-darker
-elseif $TERM != "linux" " Colorscheme for most terminals
+elseif $TERM != "linux" && $TERM != "screen" " Colorscheme for most terminals
   color jellyx
 else "Colorscheme for default VT
   color default
