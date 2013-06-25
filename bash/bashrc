@@ -20,7 +20,7 @@ export EDITOR=vim
 
 if [ -z "$TMUX" ]; then 
 #  if [ -n "$ncolors" ] && [ $ncolors = 8 ]; then
-  tmux
+  tmx main
 #  elif [ $ncolors = 256 ]; then
 #    tmux -2
 #  fi
