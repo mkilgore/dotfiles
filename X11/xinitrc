@@ -1,12 +1,17 @@
 #!/bin/bash
 export QB64_COMPILER=~/qb64-sdl/qb64/run_qb64.sh
+unset TMUX
 xrandr --output LVDS-0 --auto --output VGA-0 --auto --left-of LVDS-0
 xmodmap ~/.Xmodmap
+#xcape -e 'Control_L=Caps_Lock;'
+
+xrdb ./.Xresources
 
 unclutter -jitter 10 -reset -grab &
 
 case $1 in
   i3)
+    export USE_COLORS=1
     exec i3
     ;;
   spectrwm)
@@ -62,10 +67,17 @@ case $1 in
 		exec cinnamon
 		/usr/lib/gnome-settings-daemon/gnome-settings-daemon &
 		;;
+  fvwm)
+    exec fvwm2
+    ;;
+  herb)
+    exec herbstluftwm
+    ;;
 	*)
 		export BROWSER=firefox
 		export DE=openbox
 		exec openbox-session
 		;;
 esac
+TERM=screen
 

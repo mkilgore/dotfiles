@@ -1,3 +1,6 @@
+" set runtimepath+=$HOME/.vim/bundle/neocomplcache
+" set runtimepath+=$HOME/.vim/bundle/vimproc
+" set runtimepath+=$HOME/.vim/bundle/vimshell
 
 " Set non-vi-compatable mode
 set nocp
@@ -31,20 +34,13 @@ nmap <silent> <C-i> :MiniBufExplorer<CR>
 
 " Maps moving around open windows to C+hjkl (So Just hold Control and then
 " move like normal).
-nmap <silent> <C-h> <C-w><Left>
-nmap <silent> <C-j> <C-w><Down> 
-nmap <silent> <C-k> <C-w><Up>
-nmap <silent> <C-l> <C-w><Right>
-
-" Unmaps Control+k in normal mode (I remap to exit insert mode a little later
-" down, and this is to prevent messing things up from accidentally tapping it
-" twice when exiting insert mode)
-nnoremap <C-k> <nop>
+nnoremap <silent> <C-h> <C-w><Left>
+nnoremap <silent> <C-j> <C-w><Down> 
+nnoremap <silent> <C-k> <C-w><Up>
+nnoremap <silent> <C-l> <C-w><Right>
 
 " handy, remap's W to play the q macro. Allows quick playback since I use q
-" for one-time macros
-noremap  W @q
-
+" for one-time macros noremap  W @q
 " While it looks weird (Since I had to use the actual excape character) all
 " this does is map Alt+hjkl to resizing the current window. Handy, goes well
 " with the above remaping of Control+hjkl, which was the idea
@@ -63,8 +59,6 @@ map <silent> <C-C>h :let @" = expand("%:t:r")<CR>:!qb64_parse <C-R>"<CR>
 inoremap <silent> <C-k> <Esc>
 " Map C-p to paste inside of insert mode
 imap <silent> <C-p> <C-k>pa
-" Unmap Esc (So I didn't keep using it)
-inoremap <silent> <Esc> <nop>
 " Map Space to move one page down
 nnoremap <Space> <C-f>
 " Map Backspace to move one page up
@@ -122,7 +116,7 @@ set autoindent
 if $TERM != "linux" && $TERM != "screen"
   " Set 256 color support, and a few extra settings for solarized
   set t_Co=256
-  let g:solarized_termcolors=256
+  " let g:solarized_termcolors=256
   set background=dark
 
   " Display line numbers when not in a VT
@@ -135,7 +129,7 @@ endif
 if &diff " Colorscheme for Vimdiff
   color neverland2-darker
 elseif $TERM != "linux" && $TERM != "screen" " Colorscheme for most terminals
-  color jellyx
+  color solarized
 else "Colorscheme for default VT
   color default
 endif
@@ -163,3 +157,6 @@ vnoremap <C-m> >gv
 vnoremap <C-n> <gv
 vnoremap <C-k> <Esc>
 
+set mouse=a
+
+let g:neocomplcache_enable_at_startup = 1
