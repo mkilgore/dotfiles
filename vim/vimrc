@@ -1,7 +1,3 @@
-" set runtimepath+=$HOME/.vim/bundle/neocomplcache
-" set runtimepath+=$HOME/.vim/bundle/vimproc
-" set runtimepath+=$HOME/.vim/bundle/vimshell
-
 " Set non-vi-compatable mode
 set nocp
 
@@ -129,7 +125,7 @@ endif
 if &diff " Colorscheme for Vimdiff
   color neverland2-darker
 elseif $TERM != "linux" && $TERM != "screen" " Colorscheme for most terminals
-  color solarized
+  color neverland2-darker
 else "Colorscheme for default VT
   color default
 endif
