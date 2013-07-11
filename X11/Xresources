@@ -17,7 +17,7 @@ Xcursor.size:  22
 URxvt*geometry:					80x25
 ! URxvt*foreground:				grey80
 URxvt*borderLess:				false
-!URxvt*depth:					32
+URxvt*depth:					32
 !URxvt*background:				rgba:0000/0000/0000/dddd
 URxvt*scrollBar:				false
 URxvt*scrollstyle:            rxvt
@@ -39,7 +39,7 @@ URxvt*url-select.underline: true
 
 ! TERMINAL COLOURS
 URxvt*foreground: #D3D3D3
-URxvt*background: [95]#111111
+URxvt*background: [75]#111111
 !black
 URxvt*color0: #181818
 URxvt*color8: #484848
