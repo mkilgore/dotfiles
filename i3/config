@@ -305,25 +305,6 @@ bindsym $mod+w mode "mark_window"
 
 bindsym $mod+Shift+s exec /home/dsman195276/.i3/switch.py
 
-set $S_yellow  b58900
-set $S_orange  cb4b16
-set $S_red     dc322f
-set $S_magenta d33682
-set $S_violet  6c71c4
-set $S_blue    268bd2
-set $S_cyan    2aa198
-set $S_green   859900
-
-set $S_base03  002b36
-set $S_base02  073642
-set $S_base01  586375
-set $S_base00  657b83
-set $S_base0   839496
-set $S_base1   93a1a1
-set $S_base2   eee8d5
-set $S_base3   fdf6e3
-
-
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
 bar {
