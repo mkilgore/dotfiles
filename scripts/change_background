@@ -1,0 +1,10 @@
+#!/bin/bash
+
+dir=/home/dsman195276/backgrounds
+file=$(ls -1 "$dir" | sort --random-sort | head -1)
+path=$(readlink --canonicalize "$dir/$file")
+
+rm /home/dsman195276/.background.png
+ln -s $path /home/dsman195276/.background.png
+DISPLAY=:0 nitrogen --restore
+

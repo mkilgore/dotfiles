@@ -1,9 +1,12 @@
 #!/bin/bash
 export QB64_COMPILER=~/qb64-sdl/qb64/run_qb64.sh
 unset TMUX
-xrandr --output LVDS-0 --auto --output VGA-0 --auto --left-of LVDS-0
+xrandr --output LVDS-1 --auto --output VGA-1 --auto --left-of LVDS-1
 xmodmap ~/.Xmodmap
 #xcape -e 'Control_L=Caps_Lock;'
+
+xset +fp /usr/share/fonts/local
+xset fp rehash
 
 xrdb ./.Xresources
 

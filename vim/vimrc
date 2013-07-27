@@ -28,6 +28,9 @@ nmap k gk
 nmap <silent> <C-n> :NERDTreeToggle<CR>
 nmap <silent> <C-i> :MiniBufExplorer<CR>
 
+let NERDTreeChDirMode = 2
+let NERDTreeShowBookmarks = 1
+
 " Maps moving around open windows to C+hjkl (So Just hold Control and then
 " move like normal).
 nnoremap <silent> <C-h> <C-w><Left>
@@ -66,9 +69,9 @@ autocmd BufRead,BufNewFile *.bi set filetype=qb64
 autocmd BufRead,BufNewFile *.bas set filetype=qb64
 
 " Set some tab settings
-set tabstop=2
+set tabstop=8
 set shiftwidth=2
-set expandtab
+set noexpandtab
 
 " Setup folding settings
 " Note by default it's manual, so no automatic folding will ever happen
@@ -101,11 +104,29 @@ function! GetPotionFold(lnum)
   return '=' 
 endfunction
 
+set statusline=%t       "tail of the filename
+set statusline+=[%{strlen(&fenc)?&fenc:'none'}, "file encoding
+set statusline+=%{&ff}] "file format
+set statusline+=%h      "help file flag
+set statusline+=%m      "modified flag
+set statusline+=%r      "read only flag
+set statusline+=%y      "filetype
+set statusline+=%=      "left/right separator
+set statusline+=%c:     "cursor column
+set statusline+=%l/%L   "cursor line/total lines
+set statusline+=\ %P    "percent through file
+
 " Nice little key combo to comment out all the selected code
 map ,' :s/^/'/<CR>:nohlsearch<CR>
 
 " Auto indent setup
 set autoindent
+
+set modeline
+set modelines=5
+
+set laststatus=2
+
 
 " $TERM = "linux" in a normal VT console -- which my color settings don't work
 " in. For everything else colors work as normal
@@ -127,8 +148,15 @@ if &diff " Colorscheme for Vimdiff
 elseif $TERM != "linux" && $TERM != "screen" " Colorscheme for most terminals
   color neverland2-darker
 else "Colorscheme for default VT
-  color default
+  color color16 
 endif
+
+if has('gui_running')
+  set guioptions=i
+  colorscheme neverland2-darker
+endif
+
+set guifont="Terminus 8"
 
 " hide buffers when opening new files, don't hilight search results by
 " default
@@ -143,16 +171,16 @@ filetype plugin on
 let g:miniBufExplCheckDupeBufs=0
 
 " Directory to hold swp files
-set directory=~/.vim/swp/
+set directory=/var/tmp/swp/
 
 " In visual mode < and > indent or unindent the current lines
 " By changing them to >gv and <gv, the current selected code is kept selected
 " after an indent, allowing you to quicking do multiple indents without having
 " to reselect the code
 vnoremap <C-m> >gv
-vnoremap <C-n> <gv
-vnoremap <C-k> <Esc>
 
 set mouse=a
 
-let g:neocomplcache_enable_at_startup = 1
+let g:rainbow_active = 1
+let g:rainbow_operators = 1
+set colorcolumn=80

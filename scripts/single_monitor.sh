@@ -1,4 +1,4 @@
 #!/bin/sh
 
-xrandr --output VGA-0 --off
+xrandr --output VGA-1 --off
 nitrogen --restore

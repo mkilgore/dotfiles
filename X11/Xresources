@@ -17,11 +17,13 @@ Xcursor.size:  22
 URxvt*geometry:					80x25
 ! URxvt*foreground:				grey80
 URxvt*borderLess:				false
-URxvt*depth:					32
+!URxvt*depth:					32
 !URxvt*background:				rgba:0000/0000/0000/dddd
 URxvt*scrollBar:				false
 URxvt*scrollstyle:            rxvt
-URxvt*font:		          xft:GohuFont:size=8
+!URxvt*font:		          xft:Ohsnap:hinting=true:pixelsize=10:antialias=false
+URxvt*font:				-*-profont-*-r-*-*-11-*-*-*-*-*-*-*
+URxvt*boldFont:				-*-profont-*-*-*-*-11-*-*-*-*-*-*-*
 URxvt*cursorBlink:				true
 URxvt*cursorUnderline:				true
 URxvt*scrollColor:				#111111
@@ -36,31 +38,8 @@ URxvt*url-select.underline: true
 ! TABS COLOURS
 ! URxvt.color0  : #979797
 ! URxvt.color1  : #000000
+!
+! TERMINAL THEME
+!
+#include "/home/dsman195276/term_themes/julian.theme"	
 
-! TERMINAL COLOURS
-URxvt*foreground: #D3D3D3
-URxvt*background: [75]#111111
-!black
-URxvt*color0: #181818
-URxvt*color8: #484848
-!red
-URxvt*color1: #D7D7D7
-URxvt*color9: #F7F7F7
-!green
-URxvt*color2: #AADB0F
-URxvt*color10: #CAFB2F
-!yellow
-URxvt*color3: #666666
-URxvt*color11: #868686
-!blue
-URxvt*color4: #DDDDDD
-URxvt*color12: #FFFFFF
-!magenta
-URxvt*color5: #91BA0D
-URxvt*color13: #B1DA2D
-!cyan
-URxvt*color6: #D4D4D4
-URxvt*color14: #F4F4F4
-!white
-URxvt*color7: #D3D3D3
-URxvt*color15: #F3F3F3

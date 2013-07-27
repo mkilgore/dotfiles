@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<opml version="1.0"> 
+<head> 
+<title>My feedly feeds</title> 
+</head> 
+<body> 
+
+<outline text="Linux"> 
+ <outline text="LXer Linux News" htmlUrl="http://lxer.com/" type="rss" xmlUrl="http://lxer.com/module/newswire/headlines.rss"/> 
+ <outline text="DistroWatch.com: DistroWatch Weekly" htmlUrl="http://distrowatch.com/" type="rss" xmlUrl="http://distrowatch.com/news/dww.xml"/> 
+ <outline text="Linuxtoday.com" htmlUrl="http://www.linuxtoday.com/" type="rss" xmlUrl="http://feeds.feedburner.com/linuxtoday/linux"/> 
+ </outline> 
+
+<outline text="Tech News"> 
+ <outline text="Slashdot" htmlUrl="http://slashdot.org/" type="rss" xmlUrl="http://slashdot.org/slashdot.rss"/> 
+ <outline text="LWN.net" htmlUrl="http://lwn.net" type="rss" xmlUrl="http://lwn.net/headlines/rss"/> 
+ </outline> 
+
+<outline text="Xkcd"> 
+ <outline text="xkcd.com" htmlUrl="http://xkcd.com/" type="rss" xmlUrl="http://xkcd.com/atom.xml"/> 
+ </outline> 
+
+<outline text="reviews"> 
+ <outline text="GameCola" htmlUrl="http://gamecola.net" type="rss" xmlUrl="http://gamecola.net/feed/"/> 
+ </outline> 
+</body> 
+</opml> 

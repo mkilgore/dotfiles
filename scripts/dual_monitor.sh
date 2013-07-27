@@ -1,4 +1,4 @@
 #!/bin/sh
-xrandr --output VGA-0 --auto --left-of LVDS-0
+xrandr --output VGA-1 --auto --left-of LVDS-1
 nitrogen --restore
 

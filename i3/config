@@ -11,6 +11,9 @@
 
 set $mod Mod4
 
+set $output1 LVDS-1
+set $output2 VGA-1
+
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below. ISO 10646 = Unicode
 font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
@@ -24,6 +27,9 @@ font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
 floating_modifier $mod
 
 bindcode 148 exec --no-startup-id bash /home/dsman195276/scripts/dmenu_calc.sh
+bindsym $mod+Shift+i exec --no-startup-id bash /home/dsman195276/scripts/dmenu_irssi.sh
+bindsym $mod+Shift+u exec --no-startup-id bash /home/dsman195276/scripts/dmenu_ncmpcpp.sh
+bindsym $mod+Shift+y exec --no-startup-id bash /home/dsman195276/scripts/tmux_swap.sh
 
 # start a terminal
 bindsym $mod+Return exec --no-startup-id urxvtc
@@ -65,10 +71,10 @@ bindsym $mod+Shift+Down move down
 bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
 
-bindsym $mod+Control+p move workspace to output LVDS-0
-bindsym $mod+Control+o move workspace to output VGA-0
-bindsym $mod+Shift+p move container to output LVDS-0
-bindsym $mod+Shift+o move container to output VGA-0
+bindsym $mod+Control+p move workspace to output $output1
+bindsym $mod+Control+o move workspace to output $output2
+bindsym $mod+Shift+p move container to output $output1
+bindsym $mod+Shift+o move container to output $output2
 
 bindsym $mod+Control+l exec i3lock -c 000000
 
@@ -116,12 +122,12 @@ set $14  System
 set $15  Music
 set $16  Mail
 
-workspace $11  output VGA-0
-workspace $12  output VGA-0
-workspace $13  output VGA-0
-workspace $14  output LVDS-0
-workspace $15  output VGA-0
-workspace $16  output LVDS-0
+workspace $11  output $output2
+workspace $12  output $output2
+workspace $13  output $output2
+workspace $14  output $output1
+workspace $15  output $output2
+workspace $16  output $output1
 
 mode "move" {
 
@@ -323,24 +329,33 @@ set $S_base3   fdf6e3
 bar {
         position top
         modifier $mod
-        tray_output LVDS-0
-        status_command i3status-mod
-        font pango:DejaVu Sans Mono 8
+        tray_output $output1
+        status_command /home/dsman195276/scripts/conky_exec.sh
+	#i3status-mod
+        font -*-profont-*-r-*-*-11-*-*-*-*-*-*-*
+	#pango:DejaVu Sans Mono 8
         colors {
-                background #111111
-                statusline #D3D3D3
+	      	background #101010
+		statusline #605c5a
+		
+		focused_workspace #101010 #101010 #b72f62
+		active_workspace #101010 #101010 #6f6f6f
+		inactive_workspace #101010 #101010 #5f5f5f
+	 	urgent_workspace #2e3436 #9a878f
+                #background #111111
+                #statusline #D3D3D3
 
-                focused_Workspace  #aadb0f #111111 #eee8d5
-                active_workspace   #111111 #111111 #eee8d5
-                inactive_workspace #111111 #111111 #dddddd
+                #focused_Workspace  #aadb0f #111111 #eee8d5
+                #active_workspace   #111111 #111111 #eee8d5
+                #inactive_workspace #111111 #111111 #dddddd
                 # urgent_workspace   #6d878d #6d878d #dddddd
 
 
         }
 }
 
+new_float  normal
 new_window pixel 1
-new_float normal
 
 for_window [Class="urxvt" Instance="scratchpad"] move scratchpad
 
@@ -349,6 +364,7 @@ exec --no-startup-id nitrogen --restore
 exec --no-startup-id pulseaudio
 exec --no-startup-id twmnd
 exec --no-startup-id xcompmgr
+exec --no-startup-id conky -c /home/dsman195276/scripts/conky_calender.conky
 
 # bindsym $mod+Control+m exec 'urxvtc -name irssi -e irssi'
 
@@ -364,10 +380,18 @@ bindcode 123 exec --no-starutp-id /usr/bin/pactl set-sink-volume 0 -- '+2%'
 bindcode 121 exec --no-startup-id /usr/local/bin/toggle_pulse.sh
 
 
-client.focused          #aadb0f #aadb0f #000000 #073642
-client.focused_inactive #116655 #116655 #eee8d5 #073642
-client.unfocused        #094239 #094239 #eee8d5 #073642
-client.urgent           #000000 #44ffff #000000 #00ffff
+
+#class                  border   backgr.  text
+client.focused          #C9B5BD #C9B5BD #825969
+client.focused_inactive #191919 #191919 #999999
+client.unfocused        #191919 #191919 #999999
+client.urgent           #cd989a #cd989a #2e3436
+client.background       #121212
+
+#client.focused          #aadb0f #aadb0f #000000 #073642
+#client.focused_inactive #116655 #116655 #eee8d5 #073642
+#client.unfocused        #094239 #094239 #eee8d5 #073642
+#client.urgent           #000000 #44ffff #000000 #00ffff
 
 
 
