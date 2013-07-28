@@ -10,8 +10,6 @@ fi
 
 nice -10 offlineimap -o
 
-#!/bin/bash
-
 new_mail=0
 maildir=" "
 

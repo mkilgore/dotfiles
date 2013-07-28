@@ -1,5 +1,5 @@
 #!/bin/bash
-dmenu_opt="dmenu -fn \"terminus:size=12\" "
+dmenu_opt="dmenu -fn \"terminus:size=10\" "
 options="text\nmove\n"
 cmd=$(echo -e $options | $dmenu_opt -p "Option:")
 case $cmd in
