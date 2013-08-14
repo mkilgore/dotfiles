@@ -3,4 +3,5 @@ vim/sessions/*
 xmonad/xmonad-i386-linux
 xmonad/xmonad.hi
 xmonad/xmonad.o
+scripts/conky_calender.conky
 
