@@ -1,3 +1,5 @@
 #!/bin/bash
-now_play=$(ncmpcpp --now-playing '{%a - %t}|{%f}')
-notify-send "MPD" "$now_play"
+artist=$(ncmpcpp --now-playing '%a')
+title=$(ncmpcpp --now-playing '%t')
+notify-send "$artist" "$title"
+

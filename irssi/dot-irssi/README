@@ -1,0 +1,38 @@
+This theme got a bit out of hand, you might call it a total conversion ;)
+
+The name:
+
+  I called it dot-irssi in the custom of DJB's dot-files and cras thought
+  I meant the theme should he called it dot. Alright it's a nice name.
+
+This version:
+
+  This time I removed all my personal settings that don't involve in
+  your settings. Supposed to be cleaner.
+
+
+Installing it:
+
+  Do make a backup of your .irssi files before you start.
+
+  This is a complete config since that's the easiest. mv the dot-irssi dir
+  to .irssi and try if you like the setup. You can also paste in your own
+  setting in the right places.
+
+  You may also want to use the scripts I downloaded from irssi.org
+
+First use:
+
+  Well ehm quite simple.
+
+    /connect freenode
+    M-2 ( that's alt-2 )
+    /join test
+
+  If you get stuck with a window in the wrong place (up) you have to type:
+
+    /window move down
+
+The Author:
+
+  Han Boetes <han@mijncomputer>
