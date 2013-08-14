@@ -1,0 +1,41 @@
+
+!
+! XTerm
+!
+
+! = Sider = ! 
+URxvt*foreground : #CCCCCC
+URxvt*background : #1c1c1c
+URxvt*cursorColor : #95A7CC 
+
+!! black dark/light
+URxvt*color0 : #121212
+URxvt*color8 : #333333
+
+!! red dark/light
+URxvt*color1 : #B28284
+URxvt*color9 : #CC9597
+
+!! green dark/light
+URxvt*color2 : #82B284
+URxvt*color10 : #95CC97 
+
+!! yellow dark/light
+URxvt*color3 : #B2B282
+URxvt*color11 : #CCCC95
+
+!! blue dark/light
+URxvt*color4 : #8292B2
+URxvt*color12 : #95A7CC
+
+!! magenta dark/light
+URxvt*color5 : #A082B2
+URxvt*color13 : #B795CC
+
+!! cyan dark/light
+URxvt*color6 : #82B2A6
+URxvt*color14 : #95CCBE
+
+!! white dark/light
+URxvt*color7 : #B2B2B2
+URxvt*color15 : #CCCCCC 
