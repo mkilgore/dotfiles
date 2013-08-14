@@ -1,7 +1,8 @@
 #!/bin/bash
 export QB64_COMPILER=~/qb64-sdl/qb64/run_qb64.sh
+export BSPWM_SOCKET=/tmp/bspwm-socket
 unset TMUX
-xrandr --output LVDS-1 --auto --output VGA-1 --auto --left-of LVDS-1
+xrandr --output LVDS-0 --auto --output VGA-0 --auto --left-of LVDS-0
 xmodmap ~/.Xmodmap
 #xcape -e 'Control_L=Caps_Lock;'
 
@@ -9,13 +10,19 @@ xset +fp /usr/share/fonts/local
 xset fp rehash
 
 xrdb ./.Xresources
+urxvtd &
 
 unclutter -jitter 10 -reset -grab &
+
+PANEL_FIFO=/tmp/pan_fifo
 
 case $1 in
   i3)
     export USE_COLORS=1
     exec i3
+    ;;
+  subtle)
+    exec subtle
     ;;
   spectrwm)
     xsetroot -cursor_name left_ptr
@@ -29,12 +36,21 @@ case $1 in
     pulseaudio &
     exec dbus-launch dwm
     ;;
-	xmonad)
-		xsetroot -cursor_name left_ptr
+  bspwm)
+    compton &
+    xsetroot -cursor_name left_ptr
+    nitrogen --restore
+    sxhkd &
+    [ -e "$PANEL_FIFO" ] && rm "$PANEL_FIFO"
+    mkfifo "$PANEL_FIFO"
+    exec bspwm -c /home/dsman195276/.config/bspwm/autostart -s "$PANEL_FIFO" -p W
+    ;;
+  xmonad)
+    xsetroot -cursor_name left_ptr
     nitrogen --restore
     pulseaudio &
-		exec dbus-launch xmonad
-		;;
+    exec dbus-launch xmonad
+    ;;
   awesome)
     exec awesome
     ;;

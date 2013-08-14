@@ -1,427 +1,364 @@
--- xmonad config used by Vic Fryzel
--- Author: Vic Fryzel
--- http://github.com/vicfryzel/xmonad-config
- 
-import System.IO
-import System.Exit
 import XMonad
-import XMonad.Hooks.DynamicLog
+-- LAYOUTS
+import XMonad.Layout.Spacing
+import XMonad.Layout.Fullscreen 
+import XMonad.Layout.NoBorders
+import XMonad.Layout.PerWorkspace
+import XMonad.Layout.SimplestFloat
+import XMonad.Layout.Tabbed 
+import XMonad.Layout.ResizableTile
+import XMonad.Layout.Circle
+import XMonad.Layout.ThreeColumns
+
+-- WINDOW RULES
+import XMonad.ManageHook
+-- KEYBOARD & MOUSE CONFIG
+import XMonad.Util.EZConfig
+import XMonad.Actions.FloatKeys
+import Graphics.X11.ExtraTypes.XF86
+-- STATUS BAR
+import XMonad.Hooks.DynamicLog hiding (xmobar, xmobarPP, xmobarColor, sjanssenPP, byorgeyPP)
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.ManageHelpers
 import XMonad.Hooks.SetWMName
-import XMonad.Layout.Fullscreen
-import XMonad.Layout.NoBorders
-import XMonad.Layout.Spiral
-import XMonad.Layout.Tabbed
-import XMonad.Util.Run(spawnPipe)
-import XMonad.Util.EZConfig(additionalKeys)
-import XMonad.Layout.Named
-import XMonad.Layout.MultiToggle.Instances
-import XMonad.Layout.MultiToggle
+import XMonad.Hooks.UrgencyHook
+import XMonad.Util.Dmenu
+--import XMonad.Hooks.FadeInactive
+import XMonad.Hooks.EwmhDesktops hiding (fullscreenEventHook)
+import System.IO (hPutStrLn)
+--import XMonad.Operations
 import qualified XMonad.StackSet as W
-import qualified Data.Map        as M
+import qualified XMonad.Actions.FlexibleResize as FlexibleResize
+import XMonad.Util.Run (spawnPipe)
+import XMonad.Actions.CycleWS			-- nextWS, prevWS
+import Data.List			-- clickable workspaces
+
+
+--------------------------------------------------------------------------------------------------------------------
+-- DECLARE WORKSPACES RULES
+--------------------------------------------------------------------------------------------------------------------
+myLayout = onWorkspace (myWorkspaces !! 0) (avoidStruts (bigMonitor ||| tiledSpace ||| tiled ||| Mirror tiled) ||| fullTile)
+		$ onWorkspace (myWorkspaces !! 1) (avoidStruts (tiledSpace ||| fullTile) ||| fullScreen)
+		$ onWorkspace (myWorkspaces !! 2) (avoidStruts (simplestFloat))
+		$ avoidStruts ( tiledSpace  ||| tiled ||| fullTile ) 
+	where
+		tiled  		= spacing 5 $ ResizableTall nmaster delta ratio [] 
+		tiledSpace  	= spacing 60 $ ResizableTall nmaster delta ratio [] 
+		bigMonitor  	= spacing 5 $ ThreeColMid nmaster delta ratio 
+		fullScreen 	= noBorders(fullscreenFull Full)
+		fullTile 	= ResizableTall nmaster delta ratio [] 
+		borderlessTile	= noBorders(fullTile)
+		-- Default number of windows in master pane
+		nmaster = 1
+		-- Percent of the screen to increment when resizing
+		delta 	= 5/100
+		-- Default proportion of the screen taken up by main pane
+		ratio 	= toRational (2/(1 + sqrt 5 :: Double)) 
+
+
+--------------------------------------------------------------------------------------------------------------------
+-- WORKSPACE DEFINITIONS
+--------------------------------------------------------------------------------------------------------------------
+myWorkspaces = clickable $ ["i"
+		,"ii"	
+		,"iii"	
+		,"iv"	
+		,"v"
+		,"vi"]	
+	where clickable l = [ "^ca(1,xdotool key alt+" ++ show (n) ++ ")" ++ ws ++ "^ca()" |
+				(i,ws) <- zip [1..] l,
+				let n = i ]
+
+--------------------------------------------------------------------------------------------------------------------
+-- APPLICATION SPECIFIC RULES
+--------------------------------------------------------------------------------------------------------------------
+myManageHook = composeAll 	[ resource =? "dmenu" --> doFloat
+				, resource =? "skype" 	--> doFloat
+--				, resource =? "mplayer"	--> doFloat
+				, resource =? "steam"	--> doFloat
+				, resource =? "hl2_linux" --> doFloat
+				, resource =? "feh"	--> doIgnore
+				, resource =? "dzen2"	--> doIgnore
+				, resource =? "transmission"	--> doShift (myWorkspaces !! 2)
+				, resource =? "thunar"	--> doShift (myWorkspaces !! 2)
+				, resource =? "chromium"--> doShift (myWorkspaces !! 1)
+				, resource =? "lowriter"--> doShift (myWorkspaces !! 3)
+				, resource =? "localc"--> doShift (myWorkspaces !! 3)
+				, resource =? "loimpress"--> doShift (myWorkspaces !! 3)
+				, resource =? "zathura"--> doShift (myWorkspaces !! 3)
+				, resource =? "ario"--> doShift (myWorkspaces !! 4)
+				, resource =? "ncmpcpp"--> doShift (myWorkspaces !! 4)
+				, resource =? "alsamixer"--> doShift (myWorkspaces !! 4)
+				, resource =? "mutt"--> doShift (myWorkspaces !! 5)
+				, resource =? "irssi"--> doShift (myWorkspaces !! 5)
+				, resource =? "centerim"--> doShift (myWorkspaces !! 5)
+				, manageDocks]
+newManageHook = myManageHook <+> manageHook defaultConfig 
+
+--------------------------------------------------------------------------------------------------------------------
+-- DZEN LOG RULES for workspace names, layout image, current program title
+--------------------------------------------------------------------------------------------------------------------
+myLogHook h = dynamicLogWithPP ( defaultPP
+	{
+		  ppCurrent		= dzenColor color15 background .	pad
+		, ppVisible		= dzenColor color14 background . 	pad
+		, ppHidden		= dzenColor color14 background . 	pad
+		, ppHiddenNoWindows	= dzenColor background background .	pad
+		, ppWsSep		= ""
+		, ppSep			= "    "
+		, ppLayout		= wrap "^ca(1,xdotool key alt+space)" "^ca()" . dzenColor color2 background .
+				(\x -> case x of
+					"Full"				->	"^i(/home/sunn/.xmonad/dzen2/layout_full.xbm)"
+					"Spacing 5 ResizableTall"	->	"^i(/home/sunn/.xmonad/dzen2/layout_tall.xbm)"
+					"ResizableTall"			->	"^i(/home/sunn/.xmonad/dzen2/layout_tall.xbm)"
+					"SimplestFloat"			->	"^i(/home/sunn/.xmonad/dzen2/mouse_01.xbm)"
+					"Circle"			->	"^i(/home/sunn/.xmonad/dzen2/full.xbm)"
+					_				->	"^i(/home/sunn/.xmonad/dzen2/grid.xbm)"
+				) 
+--		, ppTitle	=  wrap "^ca(1,xdotool key alt+shift+x)^fg(#D23D3D)^fn(fkp)x ^fn()" "^ca()" . dzenColor foreground background . shorten 40 . pad
+		, ppTitle	=  wrap "^ca(1,xdotool key alt+shift+x)" "^ca()" . dzenColor color15 background . shorten 40 . pad
+		, ppOrder	=  \(ws:l:t:_) -> [ws,l, t]
+		, ppOutput	=   hPutStrLn h
+	} )
+
+
+--------------------------------------------------------------------------------------------------------------------
+-- Spawn pipes and menus on boot, set default settings
+--------------------------------------------------------------------------------------------------------------------
+myXmonadBar = "dzen2 -x '0' -y '0' -h '14' -w '500' -ta 'l' -fg '"++foreground++"' -bg '"++background++"' -fn "++myFont
+myStatusBar = "/home/sunn/.xmonad/status_bar '"++foreground++"' '"++background++"' "++myFont
+--myConky = "conky -c /home/sunn/conkyrc"
+--myStartMenu = "/home/sunn/.xmonad/start /home/sunn/.xmonad/start_apps"
 
 
-------------------------------------------------------------------------
--- Terminal
--- The preferred terminal program, which is used in a binding below and by
--- certain contrib modules.
---
-myTerminal = "xfce4-terminal"
-
-
-------------------------------------------------------------------------
--- Workspaces
--- The default number of workspaces (virtual screens) and their names.
---
-myWorkspaces = ["1:term","2:web","3:code","4:media","5:Chat"] ++ map show [6..9]
- 
-
-------------------------------------------------------------------------
--- Window rules
--- Execute arbitrary actions and WindowSet manipulations when managing
--- a new window. You can use this to, for example, always float a
--- particular program, or have a client always appear on a particular
--- workspace.
---
--- To find the property name associated with a program, use
--- > xprop | grep WM_CLASS
--- and click on the client you're interested in.
---
--- To match on the WM_NAME, you can use 'title' in the same way that
--- 'className' and 'resource' are used below.
---
-myManageHook = composeAll
-    [ className =? "Google-chrome"  --> doShift "2:web"
-    , className =? "firefox"        --> doShift "2:web"
-    , className =? "pithos"         --> doShift "4:media"
-    , className =? "vlc"            --> doShift "4:media"
-    , className =? "geany"          --> doShift "3:code"
-    , resource  =? "desktop_window" --> doIgnore
-    , className =? "Galculator"     --> doFloat
-    , resource  =? "gpicview"       --> doFloat
-    , isFullscreen --> (doF W.focusDown <+> doFullFloat)]
-
-
-------------------------------------------------------------------------
--- Layouts
--- You can specify and transform your layouts by modifying these values.
--- If you change layout bindings be sure to use 'mod-shift-space' after
--- restarting (with 'mod-q') to reset your layout state to the new
--- defaults, as xmonad preserves your old layout settings by default.
---
--- The available layouts.  Note that each layout is separated by |||,
--- which denotes layout choice.
---
-myLayout = avoidStruts . smartBorders $ mkToggle (single MIRROR) ( tallSetup ||| tabbedSetup ||| fullSetup ||| spiralSetup ||| fullscreenSetup )
-      where
-        tallSetup = named "T" $ Tall 1 (3/100) (1/2)
-        tabbedSetup = named "B" $ tabbed shrinkText tabConfig
-        fullSetup = named "F" $ Full
-        spiralSetup = named "S" $ spiral (6/7)
-        fullscreenSetup = named "X" $ noBorders (fullscreenFull Full)
-
-
-------------------------------------------------------------------------
--- Colors and borders
--- Currently based on the ir_black theme.
---
-myNormalBorderColor  = "#7c7c7c"
-myFocusedBorderColor = "#ffb6b0"
-
--- Colors for text and backgrounds of each tab when in "Tabbed" layout.
-tabConfig = defaultTheme {
-    activeBorderColor = "#7C7C7C",
-    activeTextColor = "#CEFFAC",
-    activeColor = "#000000",
-    inactiveBorderColor = "#7C7C7C",
-    inactiveTextColor = "#EEEEEE",
-    inactiveColor = "#000000"
-}
-
--- Color of current window title in xmobar.
-xmobarTitleColor = "#FFB6B0"
-
--- Color of current workspace in xmobar.
-xmobarCurrentWorkspaceColor = "#CEFFAC"
-
--- Width of the window border in pixels.
-myBorderWidth = 1
-
-
-------------------------------------------------------------------------
--- Key bindings
---
--- modMask lets you specify which modkey you want to use. The default
--- is mod1Mask ("left alt").  You may also consider using mod3Mask
--- ("right alt"), which does not conflict with emacs keybindings. The
--- "windows key" is usually mod4Mask.
---
-myModMask = mod4Mask
- 
-myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
-  ----------------------------------------------------------------------
-  -- Custom key bindings
-  --
-
-  -- Start a terminal.  Terminal to start is specified by myTerminal variable.
-  [ ((modMask .|. shiftMask, xK_Return),
-     spawn $ XMonad.terminal conf)
-
-  , ((modMask .|. shiftMask, xK_p),
-     spawn "pithos")
-
-  , ((modMask .|. shiftMask, xK_f),
-     spawn "firefox")
-
-  , ((modMask .|. shiftMask, xK_g),
-     spawn "geany")
-
-  , ((modMask .|. shiftMask, xK_v),
-     spawn "vlc")
-
-  , ((modMask .|. shiftMask, xK_c),
-     spawn "galculator")
-
-  , ((modMask .|. shiftMask, xK_i),
-     spawn "lxterminal -e irssi")
-
-  , ((modMask .|. shiftMask, xK_k),
-     spawn "sudo netctl start klk2")
-
-  , ((modMask .|. shiftMask, xK_s),
-     spawn "/home/dsman195276/scripts/single_monitor.sh")
-
-  , ((modMask .|. shiftMask, xK_d),
-     spawn "/home/dsman195276/scripts/dual_monitor.sh")
-
-  -- Lock the screen using xscreensaver.
-  , ((modMask .|. controlMask, xK_l),
-     spawn "xscreensaver-command -lock")
-
-  -- Launch dmenu via yeganesh.
-  -- Use this to launch programs without a key binding.
-  , ((modMask, xK_p),
-     spawn "exe=`dmenu_path_c | yeganesh` && eval \"exec $exe\"")
-
-  -- Take a screenshot in select mode.
-  -- After pressing this key binding, click a window, or draw a rectangle with
-  -- the mouse.
-  , ((modMask .|. shiftMask, xK_p),
-     spawn "select-screenshot")
-
-  -- Take full screenshot in multi-head mode.
-  -- That is, take a screenshot of everything you see.
-  , ((modMask .|. controlMask .|. shiftMask, xK_p),
-     spawn "screenshot")
-
-  -- Mute volume.
-  , ((modMask .|. controlMask, xK_m),
-     spawn "amixer -q set Master toggle")
-
-  -- Decrease volume.
-  , ((modMask .|. controlMask, xK_j),
-     spawn "amixer -q set Master 2%-")
-
-  -- Increase volume.
-  , ((modMask .|. controlMask, xK_k),
-     spawn "amixer -q set Master 2%+")
-
-  -- Audio previous.
-  , ((0, 0x1008FF16),
-     spawn "mpris2-remote.py previous")
-
-  -- Play/pause.
-  , ((0, 0x1008FF14),
-     spawn "mpris2-remote.py playpause")
-
-  -- Audio next.
-  , ((0, 0x1008FF17),
-     spawn "mpris2-remote.py next")
-
-  , ((modMask .|. controlMask, xK_p),
-     spawn "mpris2-remote.py playpause")
-
-  , ((modMask .|. controlMask, xK_o),
-     spawn "mpris2-remote.py next")
-
-  , ((modMask .|. controlMask, xK_i),
-     spawn "mpris2-remote.py previous")
-
-  , ((modMask .|. controlMask, xK_m),
-     sendMessage $ Toggle MIRROR)
-
-  -- Eject CD tray.
-  , ((0, 0x1008FF2C),
-     spawn "eject -T")
-
-  --------------------------------------------------------------------
-  -- "Standard" xmonad key bindings
-  --
-
-  -- Close focused window.
-  , ((modMask .|. shiftMask, xK_c),
-     kill)
-
-  -- Cycle through the available layout algorithms.
-  , ((modMask, xK_space),
-     sendMessage NextLayout)
-
-  --  Reset the layouts on the current workspace to default.
-  , ((modMask .|. shiftMask, xK_space),
-     setLayout $ XMonad.layoutHook conf)
-
-  -- Resize viewed windows to the correct size.
-  , ((modMask, xK_n),
-     refresh)
-
-  -- Move focus to the next window.
-  , ((modMask, xK_Tab),
-     windows W.focusDown)
-
-  -- Move focus to the next window.
-  , ((modMask, xK_j),
-     windows W.focusDown)
-
-  -- Move focus to the previous window.
-  , ((modMask, xK_k),
-     windows W.focusUp  )
-
-  -- Move focus to the master window.
-  , ((modMask, xK_m),
-     windows W.focusMaster  )
-
-  -- Swap the focused window and the master window.
-  , ((modMask, xK_Return),
-     windows W.swapMaster)
-
-  -- Swap the focused window with the next window.
-  , ((modMask .|. shiftMask, xK_j),
-     windows W.swapDown  )
-
-  -- Swap the focused window with the previous window.
-  , ((modMask .|. shiftMask, xK_k),
-     windows W.swapUp    )
-
-  -- Shrink the master area.
-  , ((modMask, xK_h),
-     sendMessage Shrink)
-
-  -- Expand the master area.
-  , ((modMask, xK_l),
-     sendMessage Expand)
-
-  -- Push window back into tiling.
-  , ((modMask, xK_t),
-     withFocused $ windows . W.sink)
-
-  -- Increment the number of windows in the master area.
-  , ((modMask, xK_comma),
-     sendMessage (IncMasterN 1))
-
-  -- Decrement the number of windows in the master area.
-  , ((modMask, xK_period),
-     sendMessage (IncMasterN (-1)))
-
-  -- Toggle the status bar gap.
-  -- TODO: update this binding with avoidStruts, ((modMask, xK_b),
-
-  -- Quit xmonad.
-  , ((modMask .|. shiftMask, xK_q),
-     io (exitWith ExitSuccess))
-
-  -- Restart xmonad.
-  , ((modMask, xK_q),
-     restart "xmonad" True)
-  ]
-  ++
- 
-  -- mod-[1..9], Switch to workspace N
-  -- mod-shift-[1..9], Move client to workspace N
-  [((m .|. modMask, k), windows $ f i)
-      | (i, k) <- zip (XMonad.workspaces conf) [xK_1 .. xK_9]
-      , (f, m) <- [(W.greedyView, 0), (W.shift, shiftMask)]]
-  ++
-
-  -- mod-{w,e,r}, Switch to physical/Xinerama screens 1, 2, or 3
-  -- mod-shift-{w,e,r}, Move client to screen 1, 2, or 3
-  [((m .|. modMask, key), screenWorkspace sc >>= flip whenJust (windows . f))
-      | (key, sc) <- zip [xK_w, xK_e, xK_r] [0..]
-      , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
- 
- 
-------------------------------------------------------------------------
--- Mouse bindings
---
--- Focus rules
--- True if your focus should follow your mouse cursor.
-myFocusFollowsMouse :: Bool
-myFocusFollowsMouse = False
- 
-myMouseBindings (XConfig {XMonad.modMask = modMask}) = M.fromList $
-  [
-    -- mod-button1, Set the window to floating mode and move by dragging
-    ((modMask, button1),
-     (\w -> focus w >> mouseMoveWindow w))
- 
-    -- mod-button2, Raise the window to the top of the stack
-    , ((modMask, button2),
-       (\w -> focus w >> windows W.swapMaster))
- 
-    -- mod-button3, Set the window to floating mode and resize by dragging
-    , ((modMask, button3),
-       (\w -> focus w >> mouseResizeWindow w))
- 
-    -- you may also bind events to the mouse scroll wheel (button4 and button5)
-  ]
- 
-
-------------------------------------------------------------------------
--- Status bars and logging
--- Perform an arbitrary action on each internal state change or X event.
--- See the 'DynamicLog' extension for examples.
---
--- To emulate dwm's status bar
---
--- > logHook = dynamicLogDzen
---
- 
-
-------------------------------------------------------------------------
--- Startup hook
--- Perform an arbitrary action each time xmonad starts or is restarted
--- with mod-q.  Used by, e.g., XMonad.Layout.PerWorkspace to initialize
--- per-workspace layout choices.
---
--- By default, do nothing.
-myStartupHook = return ()
- 
-
-------------------------------------------------------------------------
--- Run xmonad with all the defaults we set up.
---
 main = do
-  --xmproc <- spawnPipe "/usr/bin/xmobar ~/.xmonad/xmobar.hs"
-  status <- spawnPipe myDzenStatus
-  conky  <- spawnPipe myDzenConky
-  xmonad $ defaults {
-      logHook = myLogHook status
-      {- KdynamicLogWithPP $ xmobarPP {
-          ppOutput = hPutStrLn status
-          , ppTitle = xmobarColor xmobarTtleColor "" . shorten 100
-          , ppCurrent = xmobarColor xmobarCurrentWorkspaceColor ""
-          , ppSep = "   "} -}
-      , manageHook = manageDocks <+> myManageHook
-      , startupHook = setWMName "LG3D"
-  }
+	dzenLeftBar 	<- spawnPipe myXmonadBar
+	dzenRightBar	<- spawnPipe myStatusBar
+--	xmproc 		<- spawnPipe "GTK2_RC_FILES=/home/sunn/.gtkdocky /usr/bin/docky"
+--	xmproc 		<- spawnPipe "tint2 -c /home/sunn/.config/tint2/xmonad.tint2rc"
+--	conky 		<- spawn myConky
+--	dzenStartMenu	<- spawnPipe myStartMenu
+	xmonad $ ewmh defaultConfig
+		{ terminal		= myTerminal
+		, borderWidth		= 4
+		, normalBorderColor 	= color0
+		, focusedBorderColor  	= color8
+		, modMask 		= mod1Mask
+		, layoutHook 		= smartBorders $ myLayout
+		, workspaces 		= myWorkspaces
+		, manageHook		= newManageHook
+		, handleEventHook 	= fullscreenEventHook <+> docksEventHook
+		, startupHook		= setWMName "LG3D"
+		, logHook		= myLogHook dzenLeftBar -- >> fadeInactiveLogHook 0xdddddddd
+		}
+
+--------------------------------------------------------------------------------------------------------------------
+-- Keyboard options
+--------------------------------------------------------------------------------------------------------------------
+		`additionalKeys`
+		[((mod1Mask .|. shiftMask	, xK_b), spawn "firefox")
+		,((mod1Mask  			, xK_b), spawn "dwb")
+		,((mod1Mask .|. shiftMask	, xK_n), spawn "xterm")
+		,((mod1Mask .|. shiftMask  	, xK_t), spawn "urxvtc -e tmux")
+		,((mod4Mask  			, xK_z), spawn "zathura")
+		,((mod4Mask  			, xK_w), spawn "lowriter")
+		,((mod4Mask  			, xK_c), spawn "localc")
+		,((mod4Mask  			, xK_m), spawn "urxvtc -title mutt -name mutt -e muttb")
+		,((mod4Mask  			, xK_i), spawn "urxvtc -title irssi -name irssi -e irssi")
+		,((mod4Mask  			, xK_n), spawn "urxvtc -title ncmpcpp -name ncmpcpp -e ncmpcpp")
+		,((mod4Mask  			, xK_a), spawn "urxvtc -title alsamixer -name alsamixer -e alsamixer")
+		,((mod4Mask  			, xK_M), spawn "urxvtc -title centerim -name centerim -e centerim")
+		,((mod1Mask 			, xK_r), spawn "/home/sunn/scripts/lens")
+		,((mod1Mask .|. shiftMask	, xK_r), spawn "/home/sunn/scripts/dmenu/spotlight")
+		,((mod1Mask			, xK_q), spawn "killall dzen2; killall conky; killall tint2; cd ~/.xmonad; ghc -threaded xmonad.hs; mv xmonad xmonad-x86_64-linux; xmonad --restart" )
+		,((mod1Mask .|. shiftMask	, xK_i), spawn "xcalib -invert -alter")
+		,((mod1Mask .|. shiftMask	, xK_x), kill)
+		,((mod1Mask .|. shiftMask	, xK_c), return())
+		,((mod1Mask  			, xK_p), moveTo Prev NonEmptyWS)
+		,((mod1Mask  			, xK_n), moveTo Next NonEmptyWS)
+		,((mod1Mask  			, xK_c), moveTo Next EmptyWS)
+		,((mod1Mask .|. shiftMask	, xK_l), sendMessage MirrorShrink)
+		,((mod1Mask .|. shiftMask	, xK_h), sendMessage MirrorExpand)
+		,((mod1Mask  			, xK_a), withFocused (keysMoveWindow (-20,0)))
+		,((mod1Mask  			, xK_d), withFocused (keysMoveWindow (0,-20)))
+		,((mod1Mask  			, xK_s), withFocused (keysMoveWindow (0,20)))
+		,((mod1Mask  			, xK_f), withFocused (keysMoveWindow (20,0)))
+		,((mod1Mask .|. shiftMask  	, xK_a), withFocused (keysResizeWindow (-20,0) (0,0)))
+		,((mod1Mask .|. shiftMask  	, xK_d), withFocused (keysResizeWindow (0,-20) (0,0)))
+		,((mod1Mask .|. shiftMask  	, xK_s), withFocused (keysResizeWindow (0,20) (0,0)))
+		,((mod1Mask .|. shiftMask  	, xK_f), withFocused (keysResizeWindow (20,0) (0,0)))
+		,((mod1Mask			, xK_0), spawn "xdotool key alt+6")
+		,((mod1Mask			, xK_9), spawn "xdotool key alt+5")
+		,((mod1Mask			, xK_8), spawn "xdotool key alt+4")
+		,((0				, xK_Super_L), spawn "menu ~/.xmonad/apps")
+		,((mod1Mask			, xK_Super_L), spawn "menu ~/.xmonad/configs")
+		,((mod1Mask  			, xK_F1), spawn "~/.xmonad/sc ~/.xmonad/scripts/dzen_date.sh")
+		,((mod1Mask  			, xK_F2), spawn "~/.xmonad/sc ~/.xmonad/scripts/dzen_music.sh")
+		,((mod1Mask  			, xK_F3), spawn "~/.xmonad/sc ~/.xmonad/scripts/dzen_network.sh")
+		,((mod1Mask  			, xK_F4), spawn "~/.xmonad/sc ~/.xmonad/scripts/dzen_battery.sh")
+		,((mod1Mask  			, xK_F5), spawn "~/.xmonad/sc ~/.xmonad/scripts/dzen_hardware.sh")
+		,((mod1Mask  			, xK_F6), spawn "~/.xmonad/sc ~/.xmonad/scripts/dzen_log.sh")
+		,((0 	 			, xK_Print), spawn "scrot & mplayer /usr/share/sounds/freedesktop/stereo/screen-capture.oga")
+		,((mod1Mask 	 		, xK_Print), spawn "scrot -s & mplayer /usr/share/sounds/freedesktop/stereo/screen-capture.oga")
+		,((0                     	, xF86XK_AudioLowerVolume), spawn "/home/sunn/scripts/dvol2 -d 2 & mplayer /usr/share/sounds/freedesktop/stereo/audio-volume-change.oga")
+		,((0                     	, xF86XK_AudioRaiseVolume), spawn "/home/sunn/scripts/dvol2 -i 2 & mplayer /usr/share/sounds/freedesktop/stereo/audio-volume-change.oga")
+		,((0                     	, xF86XK_AudioMute), spawn "/home/sunn/scripts/dvol2 -t")
+		,((0                     	, xF86XK_Display), spawn "/home/sunn/scripts/project")
+		,((0                     	, xF86XK_Sleep), spawn "pm-suspend")
+		,((0                     	, xF86XK_AudioPlay), spawn "ncmpcpp toggle")
+		,((0                     	, xF86XK_AudioNext), spawn "ncmpcpp next")
+		,((0                     	, xF86XK_AudioPrev), spawn "ncmpcpp prev")
+		]
+		`additionalMouseBindings`
+		[((mod1Mask			, 6), (\_ -> moveTo Next NonEmptyWS))
+		,((mod1Mask			, 7), (\_ -> moveTo Prev NonEmptyWS))
+		,((mod1Mask			, 5), (\_ -> moveTo Prev NonEmptyWS))
+		,((mod1Mask			, 4), (\_ -> moveTo Next NonEmptyWS))
+--		,((0				, 2), (\w -> focus w >> windows W.swapMaster))
+--		,((0				, 3), (\w -> focus w >> FlexibleResize.mouseResizeWindow w))
+		]
 
 
-myLogHook h = dynamicLogWithPP $ myDzenPP { ppOutput = hPutStrLn h }
 
-myDzenStatus = "dzen2 -w '800' -ta 'l'" ++ myDzenStyle
-myDzenConky  = "conky -c ~/.conky_bar | dzen2 -x '800' -w '480' -ta 'r'" ++ myDzenStyle
-myDzenStyle  = " -h '16' -fg '#777777' -bg '#222222' -fn 'arial:bold:size=10'"
+-- Define constants
 
- 
-myDzenPP  = dzenPP
-    { ppCurrent = dzenColor "#3399ff" "" . wrap " " " "
-    , ppHidden  = dzenColor "#dddddd" "" . wrap " " " "
-    , ppVisible = dzenColor "#1144cc" "" . wrap " " " "
-    , ppHiddenNoWindows = dzenColor "#777777" "" . wrap " " " "
-    , ppUrgent  = dzenColor "#ff0000" "" . wrap " " " "
-    , ppSep     = "     "
-    , ppLayout  = dzenColor "#aaaaaa" "" . wrap "^ca(1,xdotool key super+space)· " " ·^ca()"
-    , ppTitle   = dzenColor "#ffffff" "" 
-                    . wrap "^ca(1,xdotool key super+k)^ca(2,xdotool key super+shift+c)"
-                           "                          ^ca()^ca()" . shorten 250 . dzenEscape
-    }
- 
- 
+myTerminal 	= "urxvtc"
+myBitmapsDir	= "~/.xmonad/dzen2/"
 
-------------------------------------------------------------------------
--- Combine it all together
--- A structure containing your configuration settings, overriding
--- fields in the default config. Any you don't override, will 
--- use the defaults defined in xmonad/XMonad/Config.hs
+--myFont 		= "-*-tamsyn-medium-r-normal-*-12-87-*-*-*-*-*-*"
+--myFont		= "-*-terminus-medium-*-normal-*-9-*-*-*-*-*-*-*"
+myFont		= "-*-nu-*-*-*-*-*-*-*-*-*-*-*-*"
+--myFont			= "-artwiz-lime-medium-r-normal-*-10-110-75-75-m-50-iso8859-*"
+--myFont			= "-artwiz-limey-medium-r-normal-*-10-110-75-75-m-50-iso8859-*"
+--myFont		= "-benis-lemon-medium-r-normal-*-10-110-75-75-m-50-iso8859-*"
+--myFont		= "'sans:italic:bold:underline'"
+--myFont		= "xft:droid sans mono:size=9"
+--myFont		= "xft:Droxd Sans:size=12"
+--myFont		= "-*-cure-*-*-*-*-*-*-*-*-*-*-*-*"
+
+--background=         "#140c0b"
+--foreground=         "#877a70"
+--color0=             "#403f3e"
+--color8=             "#666362"
+--color1=             "#91444d"
+--color9=             "#c78186"
+--color2=             "#6b853d"
+--color10=            "#abbd80"
+--color3=             "#916949"
+--color11=            "#cca88b"
+--color4=             "#557282"
+--color12=            "#8eabbd"
+--color5=             "#78516d"
+--color13=            "#a8879f"
+--color6=             "#58756c"
+--color14=            "#8ca8a2"
+--color7=             "#94928f"
+--color15=            "#cdcdcd"
+
+-- CRYPT
+--background="#000000"
+--foreground="#D3D3D3"
+--color0=  "#181818"
+--color8=  "#181818"
+--color1=  "#D7D7D7"
+--color9=  "#D7D7D7"
+--color2=  "#AADB0F"
+--color10= "#AADB0F"
+--color3=  "#666666"
+--color11= "#666666"
+--color4=  "#FFFFFF"
+--color12= "#FFFFFF"
+--color5=  "#91BA0D"
+--color13= "#91BA0D"
+--color6=  "#D4D4D4"
+--color14= "#D4D4D4"
+--color7=  "#D3D3D3"
+--color15= "#D3D3D3"
+
+--CLOUDS
+--background= "#0E0E0E"
+--foreground= "#fefefe"
 -- 
--- No need to modify this.
+--color0= "#454545"
+--color8= "#666666"
+--color1=  "#CC4747"
+--color9=  "#BF5858"
+--color2=  "#A0CF5D"
+--color10= "#B8D68C"
+--color3=  "#FF9B52"
+--color11= "#FFB680"
+--color4=  "#5FA69B"
+--color12= "#99C7BF"
+--color5=  "#A966CC"
+--color13= "#BD9FCC"
+--color6=  "#6CAB79"
+--color14= "#95BA9C"
+--color7=  "#d3d3d3"
+--color15= "#fefefe"
+
+-- EROSION EDIT
+background= "#181512"
+foreground= "#D6C3B6"
+color0=  "#332d29"
+color8=  "#817267"
+color1=  "#8c644c"
+color9=  "#9f7155"
+color2=  "#746C48"
+color10= "#9f7155"
+color3=  "#bfba92"
+color11= "#E0DAAC"
+color4=  "#646a6d"
+color12= "#777E82"
+color5=  "#766782"
+color13= "#897796"
+color6=  "#4B5C5E"
+color14= "#556D70"
+color7=  "#504339"
+color15= "#9a875f"
+-- EROSION
+--background= "#181512"
+--foreground= "#bea492"
 --
-defaults = defaultConfig {
-    -- simple stuff
-    terminal           = myTerminal,
-    focusFollowsMouse  = myFocusFollowsMouse,
-    borderWidth        = myBorderWidth,
-    modMask            = myModMask,
-    workspaces         = myWorkspaces,
-    normalBorderColor  = myNormalBorderColor,
-    focusedBorderColor = myFocusedBorderColor,
-    
-    -- key bindings
-    keys               = myKeys,
-    mouseBindings      = myMouseBindings,
- 
-    -- hooks, layouts
-    layoutHook         = smartBorders $ myLayout,
-    manageHook         = myManageHook,
-    startupHook        = myStartupHook
-}
+--color0= "#332d29"
+--color8= "#817267"
+--
+--color1= "#8c644c"
+--color9= "#9f7155"
+--
+--color2= "#c4be90"
+--color10= "#bec17e"
+--
+--color3= "#bfba92"
+--color11= "#fafac0"
+--
+--color4= "#646a6d"
+--color12= "#626e74"
+--
+--color5= "#6d6871"
+--color13= "#756f7b"
+--
+--color6= "#3b484a"
+--color14= "#444d4e"
+--
+--color7= "#504339"
+--color15= "#9a875f"
+
+-- PAPEY
+--foreground= "#e5e5e5"
+--background= "#1d1d1d"
+--color0=  "#121212"
+--color8=  "#5f5f5F" 
+--color1=  "#a35b66"
+--color9=  "#ab6b74"
+--color2=  "#99ab6f"
+--color10= "#acb792"
+--color3=  "#ca9733"
+--color11= "#ccaa69"
+--color4=  "#495d6e"
+--color12= "#687987"
+--color5=  "#825969"
+--color13= "#977381"
+--color6=  "#839191"
+--color14= "#98A4A4"
+--color7=  "#E0E0E0"
+--color15= "#e5e5e5"

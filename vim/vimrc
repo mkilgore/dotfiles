@@ -1,6 +1,15 @@
 " Set non-vi-compatable mode
 set nocp
+" filetype off
 
+" set rtp+=~/.vim/bundle/vundle/
+" call vundle#rc()
+
+" Bundle 'vundle'
+
+" let floo_log_level="none"
+
+" Bundle 'Floobits'
 " Turn on Syntax highlighting by default
 syntax on
 
@@ -39,7 +48,8 @@ nnoremap <silent> <C-k> <C-w><Up>
 nnoremap <silent> <C-l> <C-w><Right>
 
 " handy, remap's W to play the q macro. Allows quick playback since I use q
-" for one-time macros noremap  W @q
+" for one-time macros
+noremap  W @q
 " While it looks weird (Since I had to use the actual excape character) all
 " this does is map Alt+hjkl to resizing the current window. Handy, goes well
 " with the above remaping of Control+hjkl, which was the idea
@@ -58,10 +68,6 @@ map <silent> <C-C>h :let @" = expand("%:t:r")<CR>:!qb64_parse <C-R>"<CR>
 inoremap <silent> <C-k> <Esc>
 " Map C-p to paste inside of insert mode
 imap <silent> <C-p> <C-k>pa
-" Map Space to move one page down
-nnoremap <Space> <C-f>
-" Map Backspace to move one page up
-nnoremap <Backspace> <C-b>
 
 " Setup some filetypes for qb64 source files
 autocmd BufRead,BufNewFile *.bm set filetype=qb64
@@ -71,7 +77,7 @@ autocmd BufRead,BufNewFile *.bas set filetype=qb64
 " Set some tab settings
 set tabstop=8
 set shiftwidth=2
-set noexpandtab
+set expandtab
 
 " Setup folding settings
 " Note by default it's manual, so no automatic folding will ever happen
@@ -164,7 +170,7 @@ set hidden
 set nohlsearch
 
 " Detect filetype's
-filetype plugin on
+filetype plugin indent on
 
 " Setting for MiniBufExplorer to prevent some slowdown that can happen when
 " switching between lots of buffers

@@ -17,7 +17,8 @@ Xcursor.size:  22
 URxvt*geometry:					80x25
 ! URxvt*foreground:				grey80
 URxvt*borderLess:				false
-!URxvt*depth:					32
+URxvt*transparant:                              true
+URxvt*depth:					32
 !URxvt*background:				rgba:0000/0000/0000/dddd
 URxvt*scrollBar:				false
 URxvt*scrollstyle:            rxvt
@@ -41,5 +42,5 @@ URxvt*url-select.underline: true
 !
 ! TERMINAL THEME
 !
-#include "/home/dsman195276/term_themes/julian.theme"	
+#include "/home/dsman195276/term_themes/simple.theme"	
 

@@ -1,13 +1,13 @@
 #!/bin/sh
 echo "{\"version\":1}"
 echo "[[]"
-#conky -c ~/.conky_i3bar
-#exit
+conky -c ~/.conky_i3bar
+exit
 
-while [ 1 ]; do
-  conky -i 1 -c ~/.conky_i3bar
-  sleep 3
-done
+#while [ 1 ]; do
+#  conky -i 1 -c ~/.conky_i3bar
+#  sleep 3
+#done
 #exit
 
 #while [ 1 ]; do
