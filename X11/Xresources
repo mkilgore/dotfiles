@@ -14,6 +14,7 @@ Xcursor.size:  22
 !
 !	U R X V T - Settings
 !
+URxvt*buffered: false
 URxvt*geometry:					80x25
 ! URxvt*foreground:				grey80
 URxvt*borderLess:				false
@@ -23,8 +24,11 @@ URxvt*depth:					32
 URxvt*scrollBar:				false
 URxvt*scrollstyle:            rxvt
 !URxvt*font:		          xft:Ohsnap:hinting=true:pixelsize=10:antialias=false
-URxvt*font:				-*-profont-*-r-*-*-11-*-*-*-*-*-*-*
-URxvt*boldFont:				-*-profont-*-*-*-*-11-*-*-*-*-*-*-*
+URxvt*font:				-*-profont-*-r-*-*-12-*-*-*-*-*-*-*
+!URxvt*font: xft:lime:style=Regular:pixelsize=8
+!URxvt*font: -*-Dina-*-*-*-*-12-*-*-*-*-*-*-*
+!URxvt*boldFont: -*-Dina-*-*-*-*-12-*-*-*-*-*-*-*
+URxvt*boldFont:				-*-profont-*-*-*-*-12-*-*-*-*-*-*-*
 URxvt*cursorBlink:				true
 URxvt*cursorUnderline:				true
 URxvt*scrollColor:				#111111
@@ -42,5 +46,5 @@ URxvt*url-select.underline: true
 !
 ! TERMINAL THEME
 !
-#include "/home/dsman195276/term_themes/simple.theme"	
+#include "/home/dsman195276/term_themes/vivid.theme"
 

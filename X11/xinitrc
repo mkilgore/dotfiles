@@ -2,7 +2,8 @@
 export QB64_COMPILER=~/qb64-sdl/qb64/run_qb64.sh
 export BSPWM_SOCKET=/tmp/bspwm-socket
 unset TMUX
-xrandr --output LVDS-0 --auto --output VGA-0 --auto --left-of LVDS-0
+
+./scripts/dual_monitor.sh
 xmodmap ~/.Xmodmap
 #xcape -e 'Control_L=Caps_Lock;'
 
@@ -10,16 +11,26 @@ xset +fp /usr/share/fonts/local
 xset fp rehash
 
 xrdb ./.Xresources
-urxvtd &
+if [ -z "$(pidof urxvtd)" ]; then
+    urxvtd &
+fi
+
+rem -z -k'/home/dsman195276/scripts/remind_notify.sh %s &' &
 
 unclutter -jitter 10 -reset -grab &
+./scripts/redshift.sh &
 
 PANEL_FIFO=/tmp/pan_fifo
 
 case $1 in
+  dev)
+      exec /home/dsman195276/scripts/i3-wm-dev.sh
+      killall conky
+    ;;
   i3)
     export USE_COLORS=1
-    exec i3
+    exec /home/dsman195276/scripts/i3-wm.sh
+    killall conky
     ;;
   subtle)
     exec subtle

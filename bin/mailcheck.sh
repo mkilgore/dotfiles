@@ -15,16 +15,16 @@ maildir=" "
 
 sum_mail=0
 
-mailcheck | grep new 2>&1 >/dev/null
+mailcheck | grep new | grep INBOX 2>&1 >/dev/null
 if [ $? -eq 0 ];
 then
 
-	maildir=`mailcheck | grep new | awk '{ print $NF }' \
+	maildir=`mailcheck | grep new | grep INBOX | awk '{ print $NF }' \
 		| sed 's/\// /g' | awk '{ print $NF }' \
 		| awk '{ printf "%s ", $0 }' | sed 's/ /, /g' \
 		| sed 's/, $//'`
 
-	new_mail=`mailcheck | grep new | awk '{ print $3 }'`
+	new_mail=`mailcheck | grep new | grep INBOX | awk '{ print $3 }'`
 
 	for N in `echo $new_mail`
 	do
@@ -33,10 +33,10 @@ then
 
 	if [ $sum_mail -eq 1 ] ;
 	then
-		notify-send -c email.arrived -u normal -i mail_new \
+		DISPLAY=:0 notify-send -c email.arrived -u normal -i mail_new \
 		"You have $sum_mail new mail:" "$maildir"
-		else
-		notify-send -c email.arrived -u normal -i mail_new \
+	else
+		DISPLAY=:0 notify-send -c email.arrived -u normal -i mail_new \
 		"You have $sum_mail new mails:" "$maildir"
 	fi
 fi

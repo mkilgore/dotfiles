@@ -33,7 +33,7 @@ Irssi::signal_add('message public', 'sig_message_public');
 Irssi::signal_add('message private', 'sig_message_private');
 Irssi::signal_add('print text', 'hilight_notify');
 
-Irssi::print("--> Logging notifications to '" . 
+Irssi::print("--> Logging notifications to '" .
     Irssi::settings_get_str("notify_log") . "'");
 
 sub sig_message_public {
@@ -41,11 +41,11 @@ sub sig_message_public {
     #if ($msg =~ m/$server->{nick}/ && $notify_flag) {
        # write_log($server, $msg, $nick, $target);
         $msg = sanitise_msg($msg);
-    if ($target eq "#qb64") {
-       system("twmnc -t \"<" . $nick . ">: \" -c \"" . $msg . "\" &2>/dev/null");
-    }
-       # system("notify-send -- '" . $nick . " says' '" . $msg . "'");
+        #if ($target eq "#qb64") {
+    #   system("twmnc -t \"<" . $nick . ">: \" -c \"" . $msg . "\" &2>/dev/null");
     #}
+       system("notify-send \"<" . $nick . ":" . $target . "> " . $msg . "\"");
+       # }
 }
 
 sub sig_message_private {
@@ -53,29 +53,30 @@ sub sig_message_private {
     #if ($notify_flag) {
        # write_log($server, $msg, $nick);
         $msg = sanitise_msg($msg);
-       # system("notify-send -- 'PM from " . $nick . "' '" . $msg . "'");  
-       system("twmnc -t \"PM: " . $nick . "\" -c \"" . $msg . "\" &2>/dev/null");
+       system("notify-send \"PM: <" . $nick . "> " . $msg . "\"");
+       #system("twmnc -t \"PM: " . $nick . "\" -c \"" . $msg . "\" &2>/dev/null");
     #}
 }
 
 sub hilight_notify {
   my ($dest, $text, $stripped) = @_;
   my $server = $dest->{server};
- 
+
   return if (!$server || (!($dest->{level} & MSGLEVEL_HILIGHT) || $dest eq "#qb64"));
 
   my $sender = $stripped;
-  
+
   $stripped = sanitise_msg($stripped) ;
   my $summary = $dest->{target} . ": " . $sender;
-  system("twmnc -t \"<" . $sender . ">: \" -c \"" . $stripped . "\" &2>/dev/null");
+  system("notify-send \"<" . $sender . "> " . $stripped . "\"");
+  # system("twmnc -t \"<" . $sender . ">: \" -c \"" . $stripped . "\" &2>/dev/null");
 }
 
 sub write_log {
     my ($server, $msg, $nick, $target) = @_;
     $target ||= '<PM>';
     my ($logfile) = glob Irssi::settings_get_str('notify_log');
-    my $logmsg = '[' . strftime("%D %H:%M", localtime()) . 
+    my $logmsg = '[' . strftime("%D %H:%M", localtime()) .
         "] $server->{'tag'} $target $nick $msg";
     if (open(LF, ">>$logfile")) {
         print LF "$logmsg\n";
@@ -84,7 +85,7 @@ sub write_log {
         Irssi::print($logmsg);
     }
 }
-    
+
 sub notifier{
     $notify_flag = 1;
 }
@@ -93,7 +94,7 @@ sub reset_timer{
     my $key=shift;
     if($key == 10){
         $notify_flag = 0;
-        Irssi::timeout_remove($timer); 
+        Irssi::timeout_remove($timer);
         my $timeout = Irssi::settings_get_int('notify_delay');
         if ($timeout){
             $timer = Irssi::timeout_add_once($timeout*1000, 'notifier', undef);

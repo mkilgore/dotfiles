@@ -1,7 +1,7 @@
 
 #[[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && startx
 
-PATH="$PATH:~/.cabal/bin:~/.xmonad/bin"
+PATH="$PATH:~/.cabal/bin:~/.xmonad/bin;/home/dsman195276/.gem/ruby/2.0.0/bin"
 
 # Use VI input mode (Slightly modified in ./inputrc)
 set -o vi
@@ -18,7 +18,7 @@ export EDITOR=vim
 
 [[ $- != *i* ]] && return
 
-#if [ -z "$TMUX" ]; then 
+#if [ -z "$TMUX" ]; then
 #  if [ -n "$ncolors" ] && [ $ncolors = 8 ]; then
 #  tmx main
 #  elif [ $ncolors = 256 ]; then
@@ -29,9 +29,11 @@ export EDITOR=vim
 
 if [ -n "$ncolors" ] && [ $ncolors -ge 8 ]; then
 
-	alias ls='ls --color=auto'
+    alias ls='ls --color=auto'
 
-	fortune
+    fortune
+
+    rem -aq -ga | awk 'NF'
 
   PS1="\[\033[1;37m\]\342\224\214($(if [[ ${EUID} == 0 ]]; then echo '\[\033[01;31m\]\h'; else echo '\[\033[01;34m\]\u@\h'; fi)\[\033[1;37m\])\342\224\200(\[\033[1;34m\]\$?\[\033[1;37m\])\342\224\200(\[\033[1;32m\]\w\[\033[1;37m\])\[\033[1;37m\]\n\342\224\224\342\224\200(\[\033[1;32m\]\$(ls -1 | wc -l | sed 's: ::g') files, \$(ls -lah | grep -m 1 total | sed 's/total //')b\[\033[1;37m\])\342\224\200> \[\033[0m\]"
 
@@ -44,3 +46,6 @@ export PERL_MM_OPT="INSTALL_BASE=/home/dsman195276/perl5";
 export PERL5LIB="/home/dsman195276/perl5/lib/perl5:$PERL5LIB";
 export PATH="/home/dsman195276/perl5/bin:$PATH";
 
+shopt -s checkwinsize
+alias m=make
+alias r="rem -aq | awk 'NF'"

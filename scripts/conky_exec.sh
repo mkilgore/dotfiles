@@ -1,7 +1,7 @@
 #!/bin/sh
 echo "{\"version\":1}"
 echo "[[]"
-conky -c ~/.conky_i3bar
+conky -c ~/.conky_i3bar 2> ~/conky_issues.txt
 exit
 
 #while [ 1 ]; do

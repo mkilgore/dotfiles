@@ -1,17 +1,19 @@
 " Set non-vi-compatable mode
 set nocp
-" filetype off
+filetype off
 
-" set rtp+=~/.vim/bundle/vundle/
-" call vundle#rc()
+set rtp+=~/.vim/bundle/vundle/
+call vundle#rc()
 
-" Bundle 'vundle'
+Bundle 'vundle'
+Bundle 'tpope/vim-fugitive'
+Bundle 'flazz/vim-colorschemes'
+" Bundle 'chriskempson/base16-vim'
+" Bundle 'Yggdroot/indentLine'
+" Bundle 'scrooloose/nerdtree'
+Bundle 'bling/vim-airline'
+" Bundle 'ervandew/supertab'
 
-" let floo_log_level="none"
-
-" Bundle 'Floobits'
-" Turn on Syntax highlighting by default
-syntax on
 
 " Disable arrow-keys, mostly so I'm not tempted to use them
 noremap  <Up> ""
@@ -35,7 +37,6 @@ nmap k gk
 " Keybindings for opening-closing NERD tree as well as putting MiniBufExplorer
 " into focus
 nmap <silent> <C-n> :NERDTreeToggle<CR>
-nmap <silent> <C-i> :MiniBufExplorer<CR>
 
 let NERDTreeChDirMode = 2
 let NERDTreeShowBookmarks = 1
@@ -43,7 +44,7 @@ let NERDTreeShowBookmarks = 1
 " Maps moving around open windows to C+hjkl (So Just hold Control and then
 " move like normal).
 nnoremap <silent> <C-h> <C-w><Left>
-nnoremap <silent> <C-j> <C-w><Down> 
+nnoremap <silent> <C-j> <C-w><Down>
 nnoremap <silent> <C-k> <C-w><Up>
 nnoremap <silent> <C-l> <C-w><Right>
 
@@ -57,12 +58,13 @@ map <silent> h <C-w><
 map <silent> j <C-W>-
 map <silent> k <C-W>+
 map <silent> l <C-w>>
-
 " A few quick keybindings for compiling hte current file with QB64. It
 " requires some extra scripts /usr/local/bin
 map <silent> <C-C>l :let @" = expand("%:t:r")<CR>:!qb64_n <C-R>"<CR>
 map <silent> <C-C>k :let @" = expand("%:t:r")<CR>:!qb64_p <C-R>"<CR>
 map <silent> <C-C>h :let @" = expand("%:t:r")<CR>:!qb64_parse <C-R>"<CR>
+
+nnoremap <silent> <C-i> d?\.<CR>
 
 " Map C-k to exit insert mode
 inoremap <silent> <C-k> <Esc>
@@ -73,21 +75,24 @@ imap <silent> <C-p> <C-k>pa
 autocmd BufRead,BufNewFile *.bm set filetype=qb64
 autocmd BufRead,BufNewFile *.bi set filetype=qb64
 autocmd BufRead,BufNewFile *.bas set filetype=qb64
+" autocmd BufRead,BufNewFile *.c set filetype=c
+" autocmd BufRead,BufNewFile *.h set filetype=c
+" autocmd BufRead,BufNewFile * RainbowToggle
 
 " Set some tab settings
-set tabstop=8
+set tabstop=4
 set shiftwidth=2
 set expandtab
 
 " Setup folding settings
 " Note by default it's manual, so no automatic folding will ever happen
 " having folding contually checked is extremly slow, so I avoid it
-set foldmethod=manual
-set foldexpr=GetPotionFold(v:lnum)
-set foldnestmax=0
+" set foldmethod=manual
+" set foldexpr=GetPotionFold(v:lnum)
+set foldnestmax=1
 
 " Maps C-m to refiguring the fold's using the below function
-nnoremap <silent> <C-m> :set foldmethod=expr<CR>:set foldmethod=manual<CR>
+nnoremap <silent> <C-m> :set foldmethod=syntax<CR>:set foldmethod=manual<CR>
 
 " This function handles folds for QB64 code
 " It basically just folds on FUNCTION, SUB, TYPE blocks
@@ -107,26 +112,28 @@ function! GetPotionFold(lnum)
       return '0'
     endif
   endif
-  return '=' 
+  return '='
 endfunction
 
-set statusline=%t       "tail of the filename
-set statusline+=[%{strlen(&fenc)?&fenc:'none'}, "file encoding
-set statusline+=%{&ff}] "file format
-set statusline+=%h      "help file flag
-set statusline+=%m      "modified flag
-set statusline+=%r      "read only flag
-set statusline+=%y      "filetype
-set statusline+=%=      "left/right separator
-set statusline+=%c:     "cursor column
-set statusline+=%l/%L   "cursor line/total lines
-set statusline+=\ %P    "percent through file
+"
+" set statusline=%t       "tail of the filename
+" set statusline+=[%{strlen(&fenc)?&fenc:'none'}, "file encoding
+" set statusline+=%{&ff}] "file format
+" set statusline+=%h      "help file flag
+" set statusline+=%m      "modified flag
+" set statusline+=%r      "read only flag
+" set statusline+=%y      "filetype
+" set statusline+=%=      "left/right separator
+" set statusline+=%c:     "cursor column
+" set statusline+=%l/%L   "cursor line/total lines
+" set statusline+=\ %P    "percent through file
 
 " Nice little key combo to comment out all the selected code
 map ,' :s/^/'/<CR>:nohlsearch<CR>
 
 " Auto indent setup
 set autoindent
+set shiftwidth=4
 
 set modeline
 set modelines=5
@@ -134,35 +141,43 @@ set modelines=5
 set laststatus=2
 
 
-" $TERM = "linux" in a normal VT console -- which my color settings don't work
-" in. For everything else colors work as normal
-if $TERM != "linux" && $TERM != "screen"
-  " Set 256 color support, and a few extra settings for solarized
-  set t_Co=256
-  " let g:solarized_termcolors=256
-  set background=dark
+" let g:solarized_termcolors=256
+set background=dark
 
-  " Display line numbers when not in a VT
-  set number
+" Display line numbers when not in a VT
+set number
+set relativenumber
 
-  " Have the left column used to display current folds
-  set foldcolumn=1
-endif
+set ttyfast
+
+" Have the left column used to display current folds
+set foldcolumn=1
+
 
 if &diff " Colorscheme for Vimdiff
-  color neverland2-darker
+  " color neverland2-darker
+  color jellybeans
 elseif $TERM != "linux" && $TERM != "screen" " Colorscheme for most terminals
-  color neverland2-darker
+  " let base16colorspace=256
+  set t_Co=256
+  " color neverland2-darker
+  " color xoria256
+  " color base16-default
+  " color bubblegum
+  color jellybeans
+  " color molokai
+  hi clear SignColumn
 else "Colorscheme for default VT
-  color color16 
+  color default
 endif
 
 if has('gui_running')
   set guioptions=i
-  colorscheme neverland2-darker
+  " colorscheme neverland2-darker
+  " colorscheme xoria256
 endif
 
-set guifont="Terminus 8"
+set guifont=Terminus\ 8
 
 " hide buffers when opening new files, don't hilight search results by
 " default
@@ -189,3 +204,70 @@ set mouse=a
 
 let g:rainbow_active = 1
 let g:rainbow_operators = 1
+
+nnoremap <C-y> :RainbowToggle<CR>
+
+inoremap <silent> {<CR> {<CR>}<C-o>O
+set foldmethod=manual
+
+autocmd InsertEnter * syn clear EOLWS | syn match EOLWS excludenl /\s\+\%#\@!$/
+autocmd InsertLeave * syn clear EOLWS | syn match EOLWS excludenl /\s\+$/
+highlight EOLWS ctermfg=red ctermbg=red guibg=red
+
+function! <SID>StripTrailingWhitespace()
+    " Preparation: save last search, and cursor position.
+    let _s=@/
+    let l = line(".")
+    let c = col(".")
+    " Do the business:
+    %s/\s\+$//e
+    " Clean up: restore previous search history, and cursor position
+    let @/=_s
+    call cursor(l, c)
+endfunction
+nmap <silent> <leader><space> :call <SID>StripTrailingWhitespace()<CR>
+
+nnoremap <silent> <C-p> :setlocal spelllang=en_us
+
+" I mess these up way to often
+nnoremap <silent> :W :w
+nnoremap <silent> :Q :q
+nnoremap <silent> :WQ :wq
+
+" Eclim settings
+let g:EclimJavaValidate=0
+
+set wildmode=longest,list,full
+set wildmenu
+
+" set cursorline
+
+" let g:airline_section_b = "%{fugitive#statusline()}"
+
+" set updatetime=750
+
+" nnoremap <silent> <C-t> :TagbarOpenAutoClose<CR>
+let g:gitgutter_eager = 0
+let g:gitgutter_realtime = 0
+
+let g:airline_left_sep='>'
+let g:airline_right_sep='<'
+let g:airline_theme='dark'
+
+nnoremap <silent> _ f_x~
+
+nnoremap <silent> J :bp<CR>
+nnoremap <silent> K :bn<CR>
+
+let g:airline#extensions#tabline#enabled= 1
+let g:airline#extensions#whitespace#enabled = 1
+
+" set grepprg=grep\ -nH\ $*
+" let g:tex_flavor = "latex"
+
+let g:indentLine_color_term = 238
+let g:indentLine_char = '>'
+
+syntax on
+
+

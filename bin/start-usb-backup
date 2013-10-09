@@ -2,6 +2,10 @@
 export DISPLAY=:0
 echo "first=$1" >> /tmp/temp.txt
 
+if [ -f /tmp/dont_mount ]; then
+    exit
+fi
+
 if [ -n "$1" ] && [ -z "$(echo "$1" | grep -o "sda")" ]; then
   block=$(echo "$1" | grep -o "sd[a-z]")
   while [ -z "$serial" ]; do
