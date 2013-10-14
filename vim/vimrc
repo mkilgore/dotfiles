@@ -146,7 +146,7 @@ set background=dark
 
 " Display line numbers when not in a VT
 set number
-set relativenumber
+" set relativenumber
 
 set ttyfast
 
