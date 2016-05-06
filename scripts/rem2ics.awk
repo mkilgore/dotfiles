@@ -18,7 +18,7 @@ gsub("/","",$1)
 print "BEGIN:VEVENT"
 if ($5 != "*"){
 printf("DTSTART:%dT%02d%02d00\n",$1,$5/60,$5%60)
-printf("DTEND:%dT%02d%02d00\n",$1,$5/60+$4/60,$5%60+$4%60)
+printf("DTEND:%dT%02d%02d00\n",$1,($5+$4)/60,($5+$4)%60)
 print "SUMMARY:" substr($0,match($0,$7))
 } else {
 printf("DTSTART:%d\n",$1)
